@@ -1,0 +1,39 @@
+package org.github.gabrielgodoi.gtsolarbackend.controller;
+
+import lombok.RequiredArgsConstructor;
+import org.github.gabrielgodoi.gtsolarbackend.dto.client.ClientDto;
+import org.github.gabrielgodoi.gtsolarbackend.dto.client.InsertClientDto;
+import org.github.gabrielgodoi.gtsolarbackend.services.ClientService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
+
+import java.net.URI;
+import java.util.List;
+
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/clients")
+public class ClientController {
+
+    private final ClientService clientService;
+
+    @GetMapping
+    public ResponseEntity<List<ClientDto>> findAll() {
+        List<ClientDto> clientDtoList = this.clientService.findAll();
+        return ResponseEntity.ok().body(clientDtoList);
+    }
+
+    @GetMapping(value = "/{id}")
+    public ResponseEntity<ClientDto> findOne(@PathVariable String id) {
+        ClientDto clientDto = this.clientService.findOne(id);
+        return ResponseEntity.ok().body(clientDto);
+    }
+
+    @PostMapping
+    public ResponseEntity<ClientDto> create(@RequestBody InsertClientDto clientDto){
+        ClientDto createdClient = this.clientService.create(clientDto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(createdClient.getId()).toUri();
+        return ResponseEntity.created(uri).build();
+    }
+}

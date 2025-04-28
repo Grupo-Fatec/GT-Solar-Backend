@@ -8,21 +8,23 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
 
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "client")
-public class Client {
+@Document(collection = "project")
+public class Project {
     @Id
     private String id;
     private String name;
-    private String address;
-    private String energy_consumption;
-    private String email;
-    private String phone;
-    private String document;
+    private Integer status;
+    private List<String> steps;
+    private Set<String> documents = new HashSet<>();
+    private Admin createdBy;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 }

@@ -1,0 +1,7 @@
+spring:
+  application:
+    name: Gt-Solar-backend
+  profiles:
+    active: test
+server:
+  port: 8082

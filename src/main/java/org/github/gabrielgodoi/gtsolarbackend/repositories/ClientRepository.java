@@ -1,7 +1,7 @@
 package org.github.gabrielgodoi.gtsolarbackend.repositories;
 
-import org.apache.catalina.User;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
-public interface ClientRepository extends MongoRepository<User, String> {
+public interface ClientRepository extends MongoRepository<Client, String> {
 }
