@@ -1,6 +1,7 @@
 package org.github.gabrielgodoi.gtsolarbackend.services;
 
 import lombok.RequiredArgsConstructor;
+import org.github.gabrielgodoi.gtsolarbackend.dto.admin.AdminDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.InsertAdminDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
@@ -10,6 +11,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -17,8 +19,9 @@ public class AdminService {
     private final AdminRepository adminRepository;
 
 
-    public List<Admin> findAll() {
-        return this.adminRepository.findAll();
+    public List<AdminDto> findAll() {
+        List<Admin> adminList = this.adminRepository.findAll();
+        return adminList.stream().map(AdminDto::new).collect(Collectors.toList());
     }
 
     public Admin findOne(String id) {

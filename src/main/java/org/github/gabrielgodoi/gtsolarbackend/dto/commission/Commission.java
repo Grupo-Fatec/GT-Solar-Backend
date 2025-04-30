@@ -1,4 +1,4 @@
-package org.github.gabrielgodoi.gtsolarbackend.entities;
+package org.github.gabrielgodoi.gtsolarbackend.dto.commission;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

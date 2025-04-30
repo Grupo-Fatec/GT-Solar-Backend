@@ -1,13 +1,12 @@
 package org.github.gabrielgodoi.gtsolarbackend.entities;
 
-import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.gabrielgodoi.gtsolarbackend.dto.commission.Commission;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;

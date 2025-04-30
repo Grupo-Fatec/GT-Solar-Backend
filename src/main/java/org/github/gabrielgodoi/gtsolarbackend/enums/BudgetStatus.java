@@ -1,15 +1,26 @@
 package org.github.gabrielgodoi.gtsolarbackend.enums;
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.*;
 
 
 @Getter
 @AllArgsConstructor
 public enum BudgetStatus {
-    PENDING(1),
-    SENDED(2),
-    APROVED(3),
-    REJECTED(4),
-    EXPIRED(5);
-    @Getter
-    private final Integer value;
+    PENDING("pending"),
+    SENDED("sended"),
+    APROVED("aproved"),
+    REJECTED("rejected"),
+    EXPIRED("expired");
+
+    private final String value;
+
+    @JsonCreator
+    public static BudgetStatus fromValue(String value){
+        for (BudgetStatus role : BudgetStatus.values()) {
+            if (role.value.equalsIgnoreCase(value)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("Invalid role: " + value);
+    }
 }

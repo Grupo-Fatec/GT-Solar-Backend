@@ -1,17 +1,25 @@
 package org.github.gabrielgodoi.gtsolarbackend.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 public enum PaymentStatus {
-    PAID(1),
-    WAITING(2),
-    APPROVED(3),
-    OVERDUE(4),
-    PENDING(5);
+    PAID("paid"),
+    WAITING("waiting"),
+    APPROVED("approved"),
+    OVERDUE("overdue"),
+    PENDING("pending");
 
-    @Getter
-    private final Integer value;
+    private final String value;
+
+    @JsonCreator
+    public static PaymentStatus fromValue(String value){
+        for (PaymentStatus status: PaymentStatus.values()){
+            return status;
+        }
+        throw new IllegalArgumentException("Invalid status: " + value);
+    }
 }

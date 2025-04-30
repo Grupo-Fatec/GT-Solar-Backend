@@ -1,17 +1,27 @@
 package org.github.gabrielgodoi.gtsolarbackend.enums;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
 public enum AdminRole {
-    SELLER(1),
-    MANAGER(2),
-    SUPPORT(3),
-    ADMIN(4),
-    SUPER_ADMIN(5);
+    SELLER("seller"),
+    MANAGER("manager"),
+    SUPPORT("suport"),
+    ADMIN("admin"),
+    SUPER_ADMIN("super_admin");
 
-    @Getter
-    private final Integer value;
+    private final String value;
+
+    @JsonCreator
+    public static AdminRole fromValue(String value) {
+        for (AdminRole role : AdminRole.values()) {
+            if (role.value.equalsIgnoreCase(value)) {
+                return role;
+            }
+        }
+        throw new IllegalArgumentException("Invalid role: " + value);
+    }
 }

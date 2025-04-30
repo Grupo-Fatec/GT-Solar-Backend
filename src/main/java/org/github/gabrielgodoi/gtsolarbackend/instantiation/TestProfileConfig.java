@@ -3,7 +3,7 @@ package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Commission;
+import org.github.gabrielgodoi.gtsolarbackend.dto.commission.Commission;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 import org.github.gabrielgodoi.gtsolarbackend.enums.PaymentStatus;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;

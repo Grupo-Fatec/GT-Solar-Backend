@@ -1,8 +1,15 @@
 services:
   app:
     build: .
-    expose:
+    container_name: gt-application
+    volumes:
+      - .:/app
+    ports:
       - "8082:8082"
+    networks:
+      - application
+    depends_on:
+      - db
 
 
   express:
@@ -13,22 +20,28 @@ services:
       - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
       - ME_CONFIG_MONGODB_SERVER=db
     ports:
-      - "8083:8083"
+      - "8083:8081"
+    expose:
+      - "8083"
+    networks:
+      - application
     depends_on:
       - db
 
   db:
-    image: mongo:latest
+    build: ./.docker/database
     container_name: mongodb-database
     volumes:
-      - mongodata:/data/db
-      - config:/data/configdb
+      - ./.docker/volume/mongodb:/data/db
     ports:
       - "27016:27016"
     environment:
-      - MONGODB_INITDB_ROOT_USERNAME=user
-      - MONGODB_INITDB_ROOT_PASSWORD=pass
+      - MONGO_INITDB_ROOT_USERNAME=root
+      - MONGO_INITDB_ROOT_PASSWORD=docker
+    networks:
+      - application
 
-volumes:
-  mongodata:
-  config:
+
+networks:
+  application:
+    driver: bridge

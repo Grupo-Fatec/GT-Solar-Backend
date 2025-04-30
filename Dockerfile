@@ -6,13 +6,14 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean
+RUN mvn clean compile
+
+RUN mvn install
 
 RUN mvn package
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /app.jar
-
 
 EXPOSE 8082
 
