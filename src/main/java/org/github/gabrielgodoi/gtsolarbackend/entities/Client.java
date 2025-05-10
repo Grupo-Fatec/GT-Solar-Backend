@@ -18,11 +18,19 @@ public class Client {
     @Id
     private String id;
     private String name;
-    private String address;
-    private String energy_consumption;
+    private String document;
     private String email;
     private String phone;
-    private String document;
+    private String street;
+    private String houseNumber;
+    private String complement;
+    private String neighbor;
+    private String city;
+    private String uf;
+    private String cep;
+    private String roofType;
+    private String property;
+    private String observations;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
 }

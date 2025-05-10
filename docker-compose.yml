@@ -9,39 +9,40 @@ services:
     networks:
       - application
     depends_on:
-      - db
-
-
-  express:
-    image: mongo-express
-    container_name: mongo-express-ui
+      db:
+        condition: service_healthy
     environment:
-      - ME_CONFIG_MONGODB_ADMINUSERNAME=user
-      - ME_CONFIG_MONGODB_ADMINPASSWORD=pass
-      - ME_CONFIG_MONGODB_SERVER=db
-    ports:
-      - "8083:8081"
-    expose:
-      - "8083"
-    networks:
-      - application
-    depends_on:
-      - db
+      - SPRING_DATA_MONGODB_URI=mongodb://root:docker@db:27017/toysdb?authSource=admin
 
   db:
-    build: ./.docker/database
-    container_name: mongodb-database
+    image: mongo:latest
+    container_name: mongodb
+    hostname: mongo
+    restart: unless-stopped
     volumes:
-      - ./.docker/volume/mongodb:/data/db
+      - mongon_data_container:/data/db
     ports:
-      - "27016:27016"
+      - "27017:27017"
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=docker
+      - MONGO_INITDB_DATABASE=toysdb
+      - MONGO_DB_USERNAME=admin
+      - MONGO_DB_PASSWORD=admin
     networks:
       - application
+    command: ["--bind_ip", "0.0.0.0"]
+    healthcheck:
+      test: [ "CMD", "mongo", "--eval", "db.adminCommand('ping')" ]
+      interval: 10s
+      timeout: 10s
+      retries: 5
+
 
 
 networks:
   application:
     driver: bridge
+
+volumes:
+  mongon_data_container:

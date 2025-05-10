@@ -11,7 +11,7 @@ import lombok.Setter;
 @NoArgsConstructor
 public class InsertClientDto {
     private String name;
-    private String address;
+    private String street;
     private String cep;
     private String uf;
     private String neighbor;
