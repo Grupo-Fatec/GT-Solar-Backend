@@ -56,7 +56,7 @@ public class ClientService {
 
     public void entityToDto(Client entity, InsertClientDto dto) {
         entity.setName(dto.getName());
-        entity.setAddress(dto.getAddress());
+        entity.setStreet(dto.getStreet());
         entity.setEmail(dto.getEmail());
         entity.setPhone(dto.getPhone());
         entity.setDocument(dto.getDocument());

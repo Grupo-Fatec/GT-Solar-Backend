@@ -33,4 +33,19 @@ public class Client {
     private String observations;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
+
+    public Client(String id, String name, String phone, String street,
+                  String email, String houseNumber, String complement,
+                  LocalDateTime created_at, LocalDateTime updated_at) {
+        this.id = id;
+        this.name = name;
+        this.phone = phone;
+        this.street = street;
+        this.email = email;
+        this.houseNumber = houseNumber;
+        this.complement = complement;
+        this.created_at = created_at;
+        this.updated_at = updated_at;
+    }
+
 }

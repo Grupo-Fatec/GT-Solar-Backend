@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 public class ClientDto {
     private String id;
     private String name;
-    private String address;
+    private String street;
     private String energy_consumption;
     private String email;
     private String phone;
@@ -26,8 +26,8 @@ public class ClientDto {
     public ClientDto(Client entity) {
         setId(entity.getId());
         setName(entity.getName());
-        setAddress(entity.getAddress());
-        setEnergy_consumption(entity.getEnergy_consumption());
+        setStreet(entity.getStreet());
+        setEnergy_consumption(entity.getNeighbor());
         setEmail(entity.getEmail());
         setPhone(entity.getPhone());
         setDocument(entity.getDocument());
