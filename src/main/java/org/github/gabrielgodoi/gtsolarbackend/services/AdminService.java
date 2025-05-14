@@ -10,35 +10,60 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class AdminService {
+
     private final AdminRepository adminRepository;
 
-
     public List<AdminDto> findAll() {
-        List<Admin> adminList = this.adminRepository.findAll();
-        return adminList.stream().map(AdminDto::new).collect(Collectors.toList());
+        return adminRepository.findAll()
+                .stream()
+                .map(AdminDto::new)
+                .collect(Collectors.toList());
     }
 
-    public Admin findOne(String id) {
-        return this.adminRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
+    public AdminDto findById(String id) {
+        return adminRepository.findById(id)
+                .map(AdminDto::new)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
     }
 
-    public Admin create(InsertAdminDto adminDto) {
+    public AdminDto create(InsertAdminDto dto) {
         Admin admin = new Admin();
-        this.dtoToEntity(adminDto, admin);
-        return this.adminRepository.insert(admin);
+        dtoToEntity(dto, admin);
+        admin.setCreated_at(LocalDateTime.now());
+        admin.setUpdated_at(LocalDateTime.now());
+        return new AdminDto(adminRepository.insert(admin));
     }
 
-    public void dtoToEntity(InsertAdminDto dto, Admin entity) {
+    public AdminDto update(String id, InsertAdminDto dto) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+        dtoToEntity(dto, admin);
+        admin.setUpdated_at(LocalDateTime.now());
+        return new AdminDto(adminRepository.save(admin));
+    }
+
+    public void delete(String id) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+        adminRepository.delete(admin);
+    }
+
+    public AdminDto deactivate(String id) {
+        Admin admin = adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+        admin.setUpdated_at(LocalDateTime.now());
+        return new AdminDto(adminRepository.save(admin));
+    }
+
+    private void dtoToEntity(InsertAdminDto dto, Admin entity) {
         entity.setName(dto.getName());
         entity.setEmail(dto.getEmail());
         entity.setPassword(dto.getPassword());
-        entity.setUpdated_at(LocalDateTime.now());
-        entity.setCreated_at(LocalDateTime.now());
+        entity.setAdminRole(dto.getAdminRole());
     }
 }
