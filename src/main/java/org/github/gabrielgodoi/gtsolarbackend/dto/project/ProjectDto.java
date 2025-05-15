@@ -1,14 +1,13 @@
-package org.github.gabrielgodoi.gtsolarbackend.entities;
+package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,29 +17,18 @@ import java.util.Set;
 
 @Getter
 @Setter
-@NoArgsConstructor
 @AllArgsConstructor
-@Document(collection = "project")
-public class Project {
+@NoArgsConstructor
+@EqualsAndHashCode
+public class ProjectDto {
     @Id
     private String id;
     private String name;
     private StatusEnum status;
     private List<Step> steps;
-
-    @DBRef
-    private Admin createdBy;
-
-    @DBRef
-    private Client client;
-
-    @DBRef
-    private List<Budget> budgetList = new ArrayList<>();
-    private List<String> observations = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
-
-    private Double approvedValue;
-
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private Admin createdBy;
+    private List<Budget> budgetList = new ArrayList<>();
+    public ProjectDto(Project entity) {
+    }
 }

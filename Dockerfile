@@ -15,6 +15,13 @@ RUN mvn package
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /app.jar
 
+# Copia o script de entrada para o container
+COPY entrypoint.sh /entrypoint.sh
+
+# Dá permissão de execução ao script
+RUN chmod +x /entrypoint.sh
+
 EXPOSE 8082
 
-ENTRYPOINT ["java", "-jar", "/app.jar"]
+# Usa o script como ponto de entrada
+ENTRYPOINT ["/entrypoint.sh"]

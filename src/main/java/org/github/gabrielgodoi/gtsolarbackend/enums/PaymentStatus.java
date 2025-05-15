@@ -16,9 +16,11 @@ public enum PaymentStatus {
     private final String value;
 
     @JsonCreator
-    public static PaymentStatus fromValue(String value){
-        for (PaymentStatus status: PaymentStatus.values()){
-            return status;
+    public static PaymentStatus fromValue(String value) {
+        for (PaymentStatus status : PaymentStatus.values()) {
+            if (status.getValue().equalsIgnoreCase(value)) {
+                return status;
+            }
         }
         throw new IllegalArgumentException("Invalid status: " + value);
     }

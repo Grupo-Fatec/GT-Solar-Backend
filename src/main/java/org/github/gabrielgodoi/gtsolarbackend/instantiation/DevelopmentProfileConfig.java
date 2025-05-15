@@ -1,30 +1,26 @@
 package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 
 import lombok.RequiredArgsConstructor;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
-import org.github.gabrielgodoi.gtsolarbackend.dto.commission.Commission;
-import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
-import org.github.gabrielgodoi.gtsolarbackend.enums.PaymentStatus;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
 import org.springframework.boot.CommandLineRunner;
-import org.springframework.context.annotation.*;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @RequiredArgsConstructor
 @Configuration
-@Profile("test")
-public class TestProfileConfig implements CommandLineRunner {
+@Profile("development")
+public class DevelopmentProfileConfig implements CommandLineRunner {
+
     private final ClientRepository clientRepository;
-    private final AdminRepository adminRepository;
 
     @Override
     public void run(String... args) throws Exception {
         this.clientRepository.deleteAll();
-        this.adminRepository.deleteAll();
+
         Client c1 = new Client(
                 null,
                 "João Silva",
@@ -38,12 +34,13 @@ public class TestProfileConfig implements CommandLineRunner {
                 "São Paulo",
                 "SP",
                 "01001-000",
-                "TELHADO_FIBROCIMENTO",
+                "Telhado metálico",
                 "RESIDENCIAL",
                 "Cliente interessado em energia solar",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
+
         Client c2 = new Client(
                 null,
                 "Maria Oliveira",
@@ -57,12 +54,13 @@ public class TestProfileConfig implements CommandLineRunner {
                 "Rio de Janeiro",
                 "RJ",
                 "22010-000",
-                "TELHADO_CERAMICO",
+                "Telha cerâmica",
                 "COMERCIAL",
                 "Cliente deseja financiamento",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
+
         Client c3 = new Client(
                 null,
                 "Carlos Lima",
@@ -76,12 +74,13 @@ public class TestProfileConfig implements CommandLineRunner {
                 "Belo Horizonte",
                 "MG",
                 "30140-000",
-                "LAJE",
+                "Laje",
                 "INDUSTRIAL",
                 "Tem urgência na instalação",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
+
         Client c4 = new Client(
                 null,
                 "Fernanda Souza",
@@ -95,12 +94,13 @@ public class TestProfileConfig implements CommandLineRunner {
                 "Curitiba",
                 "PR",
                 "82030-000",
-                "TELHADO_METALICO",
+                "Telhado metálico",
                 "RESIDENCIAL",
                 "Solicitou orçamento com urgência",
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
+
         Client c5 = new Client(
                 null,
                 "Bruno Mendes",
@@ -109,12 +109,12 @@ public class TestProfileConfig implements CommandLineRunner {
                 "(51) 95555-6666",
                 "Rua dos Ipês",
                 "654",
-                "",
+                "em frente ao condomínio",
                 "Bela Vista",
                 "Porto Alegre",
                 "RS",
                 "90420-000",
-                "TELHADO_CIMENTO",
+                "Telhado metálico",
                 "COMERCIAL",
                 "Interessado em parceria",
                 LocalDateTime.now(),
@@ -123,45 +123,5 @@ public class TestProfileConfig implements CommandLineRunner {
 
         this.clientRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
 
-        Admin admin1 = new Admin(
-                null,
-                "Gabriel Godoi",
-                "gabriel.godoi@email.com",
-                "senha123",
-                AdminRole.SUPER_ADMIN,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
-
-        Admin admin2 = new Admin(
-                null,
-                "Laura Martins",
-                "laura.martins@email.com",
-                "senha456",
-                AdminRole.ADMIN,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
-
-        Admin admin3 = new Admin(
-                null,
-                "Pedro Silva",
-                "pedro.silva@email.com",
-                "senha789",
-                AdminRole.SUPPORT,
-                LocalDateTime.now(),
-                LocalDateTime.now()
-        );
-
-        // Then create and save commissions
-        Commission commission1 = new Commission(1500.0, PaymentStatus.PENDING, LocalDateTime.now());
-        Commission commission2 = new Commission(200.00, PaymentStatus.PAID, LocalDateTime.now());
-        Commission commission3 = new Commission(2000.0, PaymentStatus.PENDING, LocalDateTime.now());
-
-        admin1.getComissionsList().add(commission1);
-        admin1.getComissionsList().add(commission2);
-        admin3.getComissionsList().add(commission3);
-
-        this.adminRepository.saveAll(Arrays.asList(admin1, admin2, admin3));
     }
 }

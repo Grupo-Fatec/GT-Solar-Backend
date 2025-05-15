@@ -24,9 +24,8 @@ public class ClientService {
         return new ClientDto(clientEntity);
     }
 
-    public List<ClientDto> findAll() {
-        List<Client> clientList = this.clientRepository.findAll();
-        return clientList.stream().map(ClientDto::new).toList();
+    public List<Client> findAll() {
+        return this.clientRepository.findAll();
     }
 
     public ClientDto update(String id, InsertClientDto clientDto) {
@@ -56,7 +55,7 @@ public class ClientService {
 
     public void entityToDto(Client entity, InsertClientDto dto) {
         entity.setName(dto.getName());
-        entity.setAddress(dto.getAddress());
+        entity.setStreet(dto.getStreet());
         entity.setEmail(dto.getEmail());
         entity.setPhone(dto.getPhone());
         entity.setDocument(dto.getDocument());

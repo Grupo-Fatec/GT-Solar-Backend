@@ -3,6 +3,7 @@ package org.github.gabrielgodoi.gtsolarbackend.controller;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.client.ClientDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.client.InsertClientDto;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.services.ClientService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -11,6 +12,7 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
+@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/clients")
@@ -19,8 +21,8 @@ public class ClientController {
     private final ClientService clientService;
 
     @GetMapping
-    public ResponseEntity<List<ClientDto>> findAll() {
-        List<ClientDto> clientDtoList = this.clientService.findAll();
+    public ResponseEntity<List<Client>> findAll() {
+        List<Client> clientDtoList = this.clientService.findAll();
         return ResponseEntity.ok().body(clientDtoList);
     }
 
