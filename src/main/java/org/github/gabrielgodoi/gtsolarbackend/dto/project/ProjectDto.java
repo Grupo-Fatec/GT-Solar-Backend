@@ -1,6 +1,8 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
 import lombok.*;
+import org.github.gabrielgodoi.gtsolarbackend.dto.admin.AdminDto;
+import org.github.gabrielgodoi.gtsolarbackend.dto.budget.BudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
@@ -25,10 +27,22 @@ public class ProjectDto {
     private String id;
     private String name;
     private StatusEnum status;
-    private List<Step> steps;
+    private List<Step> steps = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
-    private Admin createdBy;
-    private List<Budget> budgetList = new ArrayList<>();
+    private String createdBy;
+    private String client;
+    private Double approvedValue;
+    private List<BudgetDto> budgetList = new ArrayList<>();
+
     public ProjectDto(Project entity) {
+        setId(entity.getId());
+        setName(entity.getName());
+        setStatus(entity.getStatus());
+        setCreatedBy(entity.getCreatedBy().getName());
+        setClient(entity.getClient().getName());
+        setApprovedValue(entity.getApprovedValue());
+        entity.getSteps().forEach(step -> this.getSteps().add(step));
+        entity.getDocuments().forEach(documents -> this.getDocuments().add(documents));
+        entity.getBudgetList().forEach(budget -> this.getBudgetList().add(new BudgetDto(budget)));
     }
 }

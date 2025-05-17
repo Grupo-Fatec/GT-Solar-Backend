@@ -26,9 +26,8 @@ public class AdminService {
     }
 
     public AdminDto findById(String id) {
-        return adminRepository.findById(id)
-                .map(AdminDto::new)
-                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+        Admin admin = adminRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found"));
+        return new AdminDto(admin);
     }
 
     public AdminDto create(InsertAdminDto dto) {

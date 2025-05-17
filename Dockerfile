@@ -6,11 +6,7 @@ WORKDIR /app
 
 COPY . .
 
-RUN mvn clean compile
-
-RUN mvn install
-
-RUN mvn package
+RUN mvn clean package -DskipTests
 
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /app.jar

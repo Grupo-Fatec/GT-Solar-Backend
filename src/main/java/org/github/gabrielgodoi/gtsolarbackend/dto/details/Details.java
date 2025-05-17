@@ -1,5 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.details;
 
+import jakarta.annotation.Nullable;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -17,6 +18,9 @@ public class Details {
     private String description;
     private Double price;
     private BudgetStatus budgetStatus;
+
+    @Nullable
     private LocalDateTime created_at;
+    @Nullable
     private LocalDateTime updated_at;
 }

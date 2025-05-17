@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Getter
 @Setter
@@ -38,12 +39,17 @@ public class ClientDto {
         setPhone(entity.getPhone());
         setDocument(entity.getDocument());
         setStreet(entity.getStreet());
+        setUf(entity.getUf());
+        setRoofType(entity.getRoofType());
+        setProperty(entity.getProperty());
         setHouseNumber(entity.getHouseNumber());
         setComplement(entity.getComplement());
+        setCep(entity.getCep());
         setNeighbor(entity.getNeighbor());
         setCity(entity.getCity());
         setUf(entity.getUf());
         setCreated_at(entity.getCreated_at());
         setUpdated_at(entity.getUpdated_at());
+        setObservations(entity.getObservations());
     }
 }

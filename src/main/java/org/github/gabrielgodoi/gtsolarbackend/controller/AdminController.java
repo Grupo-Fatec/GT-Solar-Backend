@@ -27,7 +27,6 @@ public class AdminController {
         AdminDto admin = adminService.findById(id);
         return ResponseEntity.ok(admin);
     }
-
     @GetMapping
     public ResponseEntity<List<AdminDto>> getAll() {
         return ResponseEntity.ok(adminService.findAll());

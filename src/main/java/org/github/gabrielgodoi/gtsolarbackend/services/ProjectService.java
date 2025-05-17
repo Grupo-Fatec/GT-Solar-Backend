@@ -9,6 +9,7 @@ import org.github.gabrielgodoi.gtsolarbackend.dto.project.UpdateProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
@@ -53,18 +54,18 @@ public class ProjectService {
         return projectList.stream().map(ProjectDto::new).collect(Collectors.toList());
     }
 
-    public ProjectDto create(InsertProjectDto projectDto) {
+    public ProjectDto create(String adminId, InsertProjectDto projectDto) {
         try {
-            Admin admin = this.adminRepository.findById(projectDto.getCreatedBy()).orElseThrow(
-                    () -> new EntityNotFoundException("Admin: " + projectDto.getCreatedBy() + " not found")
-            );
-            String adminId = admin.getId();
-            this.adminRepository.findById(adminId).orElseThrow(
+            Admin admin = this.adminRepository.findById(adminId).orElseThrow(
                     () -> new EntityNotFoundException("Admin: " + adminId + " not found")
+            );
+            Client client = this.clientRepository.findById(projectDto.getClientID()).orElseThrow(
+                    () -> new EntityNotFoundException("client: " + projectDto.getClientID() + " not found")
             );
             Project project = new Project();
             this.dtoToEntity(projectDto, project);
             project.setCreatedBy(admin);
+            project.setClient(client);
             Project entity = this.projectRepository.save(project);
             return new ProjectDto(entity);
         } catch (RuntimeException e) {
@@ -100,7 +101,7 @@ public class ProjectService {
         return "Adicionado com sucesso";
     }
 
-    public ProjectDto addStep(String projectId, Step step){
+    public ProjectDto addStep(String projectId, Step step) {
         Project project = this.projectRepository.findById(projectId).orElseThrow(
                 () -> new EntityNotFoundException("User: " + projectId + " doesn't exists in our database")
         );
@@ -114,11 +115,33 @@ public class ProjectService {
         Project project = this.projectRepository.findById(projectId).orElseThrow(
                 () -> new EntityNotFoundException("Project: " + projectId + " not found")
         );
-        entity.setValue(entity.getValue());
-        entity.setStatus(entity.getStatus());
+
+        AtomicReference<Double> finalPrice = new AtomicReference<>(0.00);
+        budgetDto.getDetails().forEach((d) -> {
+            finalPrice.updateAndGet(v -> v + d.getPrice());
+            entity.getDetails().add(d);
+            d.setCreated_at(LocalDateTime.now());
+            d.setUpdated_at(LocalDateTime.now());
+        });
         entity.setDate(LocalDateTime.now());
-        budgetDto.getDetails().forEach(b -> entity.getDetails().add(b));
+        // definindo qual projeto o budget pertence
         entity.setProject(project);
+
+        // setando o valor final do budget
+        entity.setValue(finalPrice.get());
+
+        // setando o valor aprovado do buget;
+        project.setApprovedValue(finalPrice.get());
+        entity.setCreated_at(LocalDateTime.now());
+        entity.setUpdated_at(LocalDateTime.now());
+
+        // devemos transformar esses orçamentos desse projeto em um pdf
+        // devemos enviar esse pdf para o cliente
+        // o projeto pode iniciar ?
+        // o budget foi aprovado ??
+
+        this.budgetRepository.save(entity);
+        this.projectRepository.save(project);
 
         return new BudgetDto(entity);
     }
@@ -148,8 +171,5 @@ public class ProjectService {
         dto.getSteps().forEach(s -> entity.getSteps().add(s));
         entity.setCreated_at(LocalDateTime.now());
         entity.setUpdated_at(LocalDateTime.now());
-        AtomicReference<Double> value = new AtomicReference<>(0.0);
-        dto.getBudgetList().forEach(budget -> value.updateAndGet(v -> v + budget.getValue()));
-        entity.setApprovedValue(value.get());
     }
 }

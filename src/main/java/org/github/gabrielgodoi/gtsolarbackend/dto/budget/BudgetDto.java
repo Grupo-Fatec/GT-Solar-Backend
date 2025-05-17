@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.github.gabrielgodoi.gtsolarbackend.dto.details.Details;
+import org.github.gabrielgodoi.gtsolarbackend.dto.project.ProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
 import org.github.gabrielgodoi.gtsolarbackend.enums.BudgetStatus;
@@ -23,14 +24,14 @@ public class BudgetDto {
     private BudgetStatus status;
     private LocalDateTime date;
     private List<Details> details = new ArrayList<>();
-    private Project project;
+    private String project;
 
     public BudgetDto(Budget entity) {
         setId(entity.getId());
         setValue(entity.getValue());
         setStatus(entity.getStatus());
         setDate(entity.getDate());
+        setProject(entity.getProject().getName());
         entity.getDetails().forEach(d -> getDetails().add(d));
-        setProject(entity.getProject());
     }
 }

@@ -16,9 +16,6 @@ import java.util.List;
 @AllArgsConstructor
 @NoArgsConstructor
 public class InsertBudgetDto {
-    private Double value;
     private BudgetStatus status;
-    private LocalDateTime date;
     private List<Details> details = new ArrayList<>();
-    private String projectId;
 }

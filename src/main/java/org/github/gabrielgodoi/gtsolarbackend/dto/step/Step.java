@@ -19,4 +19,5 @@ public class Step {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
     private List<String> observations;
+    private Boolean completed;
 }

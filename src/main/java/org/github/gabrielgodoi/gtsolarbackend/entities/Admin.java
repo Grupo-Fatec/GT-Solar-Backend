@@ -28,14 +28,4 @@ public class Admin {
     private List<Commission> comissionsList = new ArrayList<>();
     private LocalDateTime created_at;
     private LocalDateTime updated_at;
-
-    public Admin(String id, String name, String email, String password, AdminRole adminRole, LocalDateTime created_at, LocalDateTime updated_at) {
-        this.id = id;
-        this.name = name;
-        this.email = email;
-        this.password = password;
-        this.adminRole = adminRole;
-        this.created_at = created_at;
-        this.updated_at = updated_at;
-    }
 }

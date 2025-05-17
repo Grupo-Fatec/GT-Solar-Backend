@@ -3,6 +3,7 @@ package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
+import org.github.gabrielgodoi.gtsolarbackend.repositories.ProjectRepository;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -16,10 +17,12 @@ import java.util.Arrays;
 public class DevelopmentProfileConfig implements CommandLineRunner {
 
     private final ClientRepository clientRepository;
+    private final ProjectRepository projectRepository;
 
     @Override
     public void run(String... args) throws Exception {
         this.clientRepository.deleteAll();
+        this.projectRepository.deleteAll();
 
         Client c1 = new Client(
                 null,

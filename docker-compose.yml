@@ -10,8 +10,7 @@ services:
       - application
     restart: always
     depends_on:
-      db:
-        condition: service_healthy
+      - db
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://root:docker@mongo:27017/toysdb?authSource=admin
 

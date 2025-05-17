@@ -1,9 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.entities;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.springframework.data.annotation.Id;
@@ -20,13 +17,14 @@ import java.util.Set;
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 @Document(collection = "project")
 public class Project {
     @Id
     private String id;
     private String name;
     private StatusEnum status;
-    private List<Step> steps;
+    private List<Step> steps = new ArrayList<>();
 
     @DBRef
     private Admin createdBy;

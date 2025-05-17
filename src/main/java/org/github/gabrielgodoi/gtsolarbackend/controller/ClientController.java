@@ -27,7 +27,7 @@ public class ClientController {
     }
 
     @GetMapping(value = "/{id}")
-    public ResponseEntity<ClientDto> findOne(@PathVariable String id) {
+    public ResponseEntity<ClientDto> findOne(@PathVariable("id") String id) {
         ClientDto clientDto = this.clientService.findOne(id);
         return ResponseEntity.ok().body(clientDto);
     }
