@@ -1,6 +1,5 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
-import jakarta.annotation.Nullable;
 import lombok.*;
 import org.github.gabrielgodoi.gtsolarbackend.dto.budget.InsertBudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
