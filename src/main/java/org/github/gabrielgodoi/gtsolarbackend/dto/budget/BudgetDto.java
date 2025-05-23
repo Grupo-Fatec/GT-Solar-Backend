@@ -28,7 +28,7 @@ public class BudgetDto {
 
     public BudgetDto(Budget entity) {
         setId(entity.getId());
-        setValue(entity.getValue());
+        setValue(entity.getApprovedValue());
         setStatus(entity.getStatus());
         setDate(entity.getDate());
         setProject(entity.getProject().getName());

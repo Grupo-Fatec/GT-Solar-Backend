@@ -8,7 +8,7 @@ import lombok.*;
 public enum BudgetStatus {
     PENDING("pending"),
     SENDED("sended"),
-    APROVED("aproved"),
+    APPROVED("approved"),
     REJECTED("rejected"),
     EXPIRED("expired");
 

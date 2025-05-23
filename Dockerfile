@@ -20,4 +20,4 @@ RUN chmod +x /entrypoint.sh
 EXPOSE 8082
 
 # Usa o script como ponto de entrada
-ENTRYPOINT ["/entrypoint.sh"]
+ENTRYPOINT ["java -jar app.jar"]

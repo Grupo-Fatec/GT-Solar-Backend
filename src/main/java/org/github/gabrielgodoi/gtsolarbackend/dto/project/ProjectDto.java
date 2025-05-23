@@ -33,16 +33,4 @@ public class ProjectDto {
     private String client;
     private Double approvedValue;
     private List<BudgetDto> budgetList = new ArrayList<>();
-
-    public ProjectDto(Project entity) {
-        setId(entity.getId());
-        setName(entity.getName());
-        setStatus(entity.getStatus());
-        setCreatedBy(entity.getCreatedBy().getName());
-        setClient(entity.getClient().getName());
-        setApprovedValue(entity.getApprovedValue());
-        entity.getSteps().forEach(step -> this.getSteps().add(step));
-        entity.getDocuments().forEach(documents -> this.getDocuments().add(documents));
-        entity.getBudgetList().forEach(budget -> this.getBudgetList().add(new BudgetDto(budget)));
-    }
 }

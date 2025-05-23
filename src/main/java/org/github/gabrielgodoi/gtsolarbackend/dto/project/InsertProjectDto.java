@@ -1,13 +1,9 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
-import org.github.gabrielgodoi.gtsolarbackend.dto.budget.BudgetDto;
+import jakarta.annotation.Nullable;
+import lombok.*;
 import org.github.gabrielgodoi.gtsolarbackend.dto.budget.InsertBudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 
 import java.util.ArrayList;
@@ -17,6 +13,7 @@ import java.util.Set;
 
 @Getter
 @Setter
+@ToString
 @NoArgsConstructor
 @AllArgsConstructor
 public class InsertProjectDto {
@@ -26,5 +23,5 @@ public class InsertProjectDto {
     private List<Step> steps = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
     private List<InsertBudgetDto> budgetList = new ArrayList<>();
-    private String clientID;
+    private String clientId;
 }

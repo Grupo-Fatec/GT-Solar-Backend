@@ -3,6 +3,7 @@ package org.github.gabrielgodoi.gtsolarbackend.services;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.budget.BudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.budget.InsertBudgetDto;
+import org.github.gabrielgodoi.gtsolarbackend.dto.details.Details;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.InsertProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.ProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.UpdateProjectDto;
@@ -11,15 +12,19 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
+import org.github.gabrielgodoi.gtsolarbackend.errors.AlreadyExistsException;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.BudgetRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ProjectRepository;
+import org.github.gabrielgodoi.gtsolarbackend.services.mappers.BudgetMapper;
+import org.github.gabrielgodoi.gtsolarbackend.services.mappers.ProjectMapper;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.stream.Collectors;
@@ -31,46 +36,61 @@ public class ProjectService {
     private final ClientRepository clientRepository;
     private final AdminRepository adminRepository;
     private final BudgetRepository budgetRepository;
+    private final BudgetMapper budgetMapper;
+    private final ProjectMapper projectMapper;
 
     public List<ProjectDto> findAll() {
         List<Project> projectList = this.projectRepository.findAll();
-        return projectList.stream().map(ProjectDto::new).collect(Collectors.toList());
+        return projectList.stream().map(this.projectMapper::entityToDto).collect(Collectors.toList());
     }
 
     public ProjectDto findOne(String id) {
         Project project = this.projectRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("Project: " + id + " not found")
         );
-        return new ProjectDto(project);
+        return this.projectMapper.entityToDto(project);
     }
 
     public List<ProjectDto> findFromClient(String clientId) {
         this.clientRepository.findById(clientId).orElseThrow(
                 () -> new EntityNotFoundException("User: " + clientId + " doesn't exists in our database")
         );
-        List<Project> projectList = this.projectRepository.findByClientId(clientId).orElseThrow(
+        List<Project> projectList = this.projectRepository.findAllByClientId(clientId).orElseThrow(
                 () -> new EntityNotFoundException("User: " + clientId + " still don't have any project related to him!")
         );
-        return projectList.stream().map(ProjectDto::new).collect(Collectors.toList());
+        return projectList.stream().map(this.projectMapper::entityToDto).collect(Collectors.toList());
     }
 
     public ProjectDto create(String adminId, InsertProjectDto projectDto) {
-        try {
-            Admin admin = this.adminRepository.findById(adminId).orElseThrow(
-                    () -> new EntityNotFoundException("Admin: " + adminId + " not found")
-            );
-            Client client = this.clientRepository.findById(projectDto.getClientID()).orElseThrow(
-                    () -> new EntityNotFoundException("client: " + projectDto.getClientID() + " not found")
-            );
-            Project project = new Project();
-            this.dtoToEntity(projectDto, project);
-            project.setCreatedBy(admin);
-            project.setClient(client);
-            Project entity = this.projectRepository.save(project);
-            return new ProjectDto(entity);
-        } catch (RuntimeException e) {
-            throw new RuntimeException(e);
+        Admin admin = this.adminRepository.findById(adminId).orElseThrow(
+                () -> new EntityNotFoundException("Admin: " + adminId + " not found")
+        );
+        Client client =this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
+                () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
+        );
+
+        Project retrivied = this.projectRepository.findByName(projectDto.getName());
+
+        if (retrivied != null) {
+            throw new AlreadyExistsException("Projeto Já existe");
         }
+
+        Project project = this.projectMapper.dtoToEntity(projectDto);
+        project.setCreatedBy(admin);
+        project.setClient(client);
+        project.setBudgetList(new ArrayList<>());
+        Project entity = this.projectRepository.save(project);
+
+        projectDto.getBudgetList().forEach(budgetDto -> {
+            double totalApproved = budgetDto.getDetails().stream()
+                    .mapToDouble(Details::getPrice)
+                    .sum();
+            budgetDto.setApprovedValue(totalApproved);
+            Budget budget = this.budgetMapper.dtoToEntity(budgetDto);
+            budget.setProject(entity);
+            this.budgetRepository.save(budget);
+        });
+        return this.projectMapper.entityToDto(entity);
     }
 
     public ProjectDto update(String projectId, UpdateProjectDto updateDto) {
@@ -89,7 +109,7 @@ public class ProjectService {
         project.setUpdated_at(LocalDateTime.now());
 
         Project updatedProject = this.projectRepository.save(project);
-        return new ProjectDto(updatedProject);
+        return this.projectMapper.entityToDto(updatedProject);
     }
 
 
@@ -107,7 +127,7 @@ public class ProjectService {
         );
         project.getSteps().add(step);
         Project savedProject = this.projectRepository.save(project);
-        return new ProjectDto(savedProject);
+        return this.projectMapper.entityToDto(savedProject);
     }
 
     public BudgetDto addBudget(String projectId, InsertBudgetDto budgetDto) {
@@ -124,25 +144,15 @@ public class ProjectService {
             d.setUpdated_at(LocalDateTime.now());
         });
         entity.setDate(LocalDateTime.now());
-        // definindo qual projeto o budget pertence
         entity.setProject(project);
-
-        // setando o valor final do budget
-        entity.setValue(finalPrice.get());
-
-        // setando o valor aprovado do buget;
+        entity.setApprovedValue(finalPrice.get());
         project.setApprovedValue(finalPrice.get());
-        entity.setCreated_at(LocalDateTime.now());
-        entity.setUpdated_at(LocalDateTime.now());
-
         // devemos transformar esses orçamentos desse projeto em um pdf
         // devemos enviar esse pdf para o cliente
         // o projeto pode iniciar ?
         // o budget foi aprovado ??
-
         this.budgetRepository.save(entity);
         this.projectRepository.save(project);
-
         return new BudgetDto(entity);
     }
 
@@ -161,9 +171,6 @@ public class ProjectService {
         this.projectRepository.deleteAllById(projectIds);
     }
 
-    public void updateData(Project entity, InsertProjectDto insertProjectDto) {
-        entity.setUpdated_at(LocalDateTime.now());
-    }
 
     public void dtoToEntity(InsertProjectDto dto, Project entity) {
         entity.setName(dto.getName());
@@ -172,4 +179,5 @@ public class ProjectService {
         entity.setCreated_at(LocalDateTime.now());
         entity.setUpdated_at(LocalDateTime.now());
     }
+
 }

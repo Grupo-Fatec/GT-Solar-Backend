@@ -38,4 +38,10 @@ public class ClientController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(createdClient.getId()).toUri();
         return ResponseEntity.created(uri).build();
     }
+
+    @DeleteMapping(value = "/{id}")
+    public ResponseEntity<Void> delete(@PathVariable("id") String id){
+        this.clientService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
 }

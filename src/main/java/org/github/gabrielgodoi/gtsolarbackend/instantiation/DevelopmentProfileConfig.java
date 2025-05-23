@@ -1,7 +1,10 @@
 package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 
 import lombok.RequiredArgsConstructor;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
+import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
+import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ProjectRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -9,7 +12,9 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -17,12 +22,14 @@ import java.util.Arrays;
 public class DevelopmentProfileConfig implements CommandLineRunner {
 
     private final ClientRepository clientRepository;
+    private final AdminRepository adminRepository;
     private final ProjectRepository projectRepository;
 
     @Override
     public void run(String... args) throws Exception {
         this.clientRepository.deleteAll();
         this.projectRepository.deleteAll();
+        this.adminRepository.deleteAll();
 
         Client c1 = new Client(
                 null,
@@ -124,7 +131,53 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 LocalDateTime.now()
         );
 
-        this.clientRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
 
+        Admin ad1 = new Admin(
+                null,
+                "Alice Silva",
+                "alice@admin.com",
+                "senha123",
+                AdminRole.SUPER_ADMIN,
+                new ArrayList<>(),
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        Admin ad2 = new Admin(
+                null,
+                "Bruno Souza",
+                "bruno@admin.com",
+                "senha456",
+                AdminRole.SUPPORT,
+                new ArrayList<>(),
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        Admin ad3 = new Admin(
+                null,
+                "Carla Mendes",
+                "carla@admin.com",
+                "senha789",
+                AdminRole.SELLER,
+                new ArrayList<>(),
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+        Admin ad4 = new Admin(
+                null,
+                "Diego Rocha",
+                "diego@admin.com",
+                "senha321",
+                AdminRole.SUPPORT,
+                new ArrayList<>(),
+                LocalDateTime.now(),
+                LocalDateTime.now()
+        );
+
+
+        this.adminRepository.saveAll(Arrays.asList(ad1, ad2, ad3, ad4));
+        this.clientRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
     }
 }

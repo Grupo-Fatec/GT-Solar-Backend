@@ -4,6 +4,7 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.github.gabrielgodoi.gtsolarbackend.dto.budget.InsertBudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.details.Details;
 import org.github.gabrielgodoi.gtsolarbackend.enums.BudgetStatus;
 import org.springframework.data.annotation.Id;
@@ -22,14 +23,11 @@ import java.util.List;
 public class Budget {
     @Id
     private String id;
-    private Double value;
+    private Double approvedValue;
     private BudgetStatus status;
     private LocalDateTime date;
     private List<Details> details = new ArrayList<>();
 
     @DBRef
     private Project project;
-
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
 }
