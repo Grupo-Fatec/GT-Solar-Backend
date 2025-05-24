@@ -35,7 +35,9 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<ClientDto> create(@RequestBody InsertClientDto clientDto){
         ClientDto createdClient = this.clientService.create(clientDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(createdClient.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+                .buildAndExpand(createdClient.getId())
+                .toUri();
         return ResponseEntity.created(uri).build();
     }
 
@@ -43,5 +45,13 @@ public class ClientController {
     public ResponseEntity<Void> delete(@PathVariable("id") String id){
         this.clientService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientDto> updateClient(
+            @PathVariable String id,
+            @RequestBody InsertClientDto clientDto) {
+        ClientDto updatedClient = clientService.update(id, clientDto);
+        return ResponseEntity.ok(updatedClient);
     }
 }

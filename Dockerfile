@@ -8,16 +8,13 @@ COPY . .
 
 RUN mvn clean package -DskipTests
 
+# Copia o JAR compilado para um local fora da pasta que será sobrescrita por volumes
 ARG JAR_FILE=target/*.jar
 COPY ${JAR_FILE} /app.jar
 
-# Copia o script de entrada para o container
 COPY entrypoint.sh /entrypoint.sh
-
-# Dá permissão de execução ao script
 RUN chmod +x /entrypoint.sh
 
 EXPOSE 8082
 
-# Usa o script como ponto de entrada
-ENTRYPOINT ["java -jar app.jar"]
+ENTRYPOINT ["/entrypoint.sh"]
