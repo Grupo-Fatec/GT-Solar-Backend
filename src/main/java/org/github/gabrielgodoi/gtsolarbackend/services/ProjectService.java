@@ -39,7 +39,15 @@ public class ProjectService {
 
     public List<ProjectDto> findAll() {
         List<Project> projectList = this.projectRepository.findAll();
-        return projectList.stream().map(this.projectMapper::entityToDto).collect(Collectors.toList());
+        return projectList.stream().map(project -> {
+            ProjectDto dto = this.projectMapper.entityToDto(project);
+            if (project.getBudget() != null) {
+                dto.setBudgetDto(
+                        this.budgetMapper.entityToDto(project.getBudget())
+                );
+            }
+            return dto;
+        }).collect(Collectors.toList());
     }
 
     public ProjectDto findOne(String id) {
@@ -59,6 +67,7 @@ public class ProjectService {
         return projectList.stream().map(this.projectMapper::entityToDto).collect(Collectors.toList());
     }
 
+
     public ProjectDto create(String adminId, InsertProjectDto projectDto) {
         Admin admin = this.adminRepository.findById(adminId).orElseThrow(
                 () -> new EntityNotFoundException("Admin: " + adminId + " not found")
@@ -66,33 +75,69 @@ public class ProjectService {
         Client client = this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
                 () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
         );
-        Project retrivied = this.projectRepository.findByName(projectDto.getName());
 
+        Project retrivied = this.projectRepository.findByName(projectDto.getName());
         if (retrivied != null) {
-            throw new AlreadyExistsException("Projeto Já existe");
+            throw new AlreadyExistsException("Projeto já existe");
         }
+
+        // Cria entidade Project
         Project project = this.projectMapper.dtoToEntity(projectDto);
         project.setCreatedBy(admin);
         project.setClient(client);
-        Project entity = this.projectRepository.save(project);
-        return this.projectMapper.entityToDto(entity);
+
+        // Salva projeto inicialmente para gerar ID
+        Project savedProject = this.projectRepository.save(project);
+
+        // Cria orçamento
+        Budget budget = this.budgetMapper.dtoToEntity(projectDto.getBudgetDto());
+
+        // Soma os valores dos detalhes
+        Double approvedValue = 0.0;
+        for (Details detail : projectDto.getBudgetDto().getDetails()) {
+            approvedValue += detail.getPrice();
+        }
+        budget.setApprovedValue(approvedValue);
+        budget.setDate(LocalDateTime.now());
+        // Liga o orçamento ao projeto
+        budget.setProject(savedProject);
+        // Salva orçamento
+        Budget savedBudget = this.budgetRepository.save(budget);
+        // Liga o orçamento ao projeto (lado inverso da relação)
+        savedProject.setBudget(savedBudget);
+        // Salva novamente o projeto com orçamento setado
+        this.projectRepository.save(savedProject);
+        ProjectDto dto = this.projectMapper.entityToDto(savedProject);
+        dto.setBudgetDto(this.budgetMapper.entityToDto(savedBudget));
+        return dto;
     }
+
 
     public ProjectDto update(String projectId, UpdateProjectDto updateDto) {
         Project project = this.projectRepository.findById(projectId).orElseThrow(
                 () -> new EntityNotFoundException("Project: " + projectId + " not found")
         );
         if (updateDto.getName() != null && !updateDto.getName().isBlank()) {
-            project.setName(updateDto.getName());
+            String newName = updateDto.getName().trim();
+            if (!newName.equalsIgnoreCase(project.getName())) {
+                Project existing = this.projectRepository.findByName(newName);
+                if (existing != null && !existing.getId().equals(projectId)) {
+                    throw new AlreadyExistsException("Já existe um projeto com o nome: " + newName);
+                }
+                project.setName(newName);
+            }
         }
         if (updateDto.getStatus() != null) {
             project.setStatus(updateDto.getStatus());
         }
         if (updateDto.getObservations() != null && !updateDto.getObservations().isEmpty()) {
-            project.getObservations().addAll(updateDto.getObservations());
+            for (String obs : updateDto.getObservations()) {
+                if (obs != null && !obs.trim().isBlank()) {
+                    project.getObservations().add(obs.trim());
+                }
+            }
         }
         project.setUpdated_at(LocalDateTime.now());
-
         Project updatedProject = this.projectRepository.save(project);
         return this.projectMapper.entityToDto(updatedProject);
     }
@@ -132,14 +177,9 @@ public class ProjectService {
         entity.setDate(LocalDateTime.now());
         entity.setProject(project);
         entity.setApprovedValue(finalPrice.get());
-        project.setApprovedValue(finalPrice.get());
-        // devemos transformar esses orçamentos desse projeto em um pdf
-        // devemos enviar esse pdf para o cliente
-        // o projeto pode iniciar ?
-        // o budget foi aprovado ??
         this.budgetRepository.save(entity);
         this.projectRepository.save(project);
-        return new BudgetDto(entity);
+        return this.budgetMapper.entityToDto(entity);
     }
 */
 
@@ -157,15 +197,7 @@ public class ProjectService {
 
         this.projectRepository.deleteAllById(projectIds);
     }
+
 }
-
-
-    public void dtoToEntity(InsertProjectDto dto, Project entity) {
-        entity.setName(dto.getName());
-        entity.setStatus(dto.getStatus());
-        dto.getSteps().forEach(s -> entity.getSteps().add(s));
-        entity.setCreated_at(LocalDateTime.now());
-        entity.setUpdated_at(LocalDateTime.now());
-    }
 
 }

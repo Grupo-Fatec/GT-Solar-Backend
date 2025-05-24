@@ -5,6 +5,7 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
+import org.github.gabrielgodoi.gtsolarbackend.repositories.BudgetRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ProjectRepository;
 import org.springframework.boot.CommandLineRunner;
@@ -24,12 +25,14 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
     private final ClientRepository clientRepository;
     private final AdminRepository adminRepository;
     private final ProjectRepository projectRepository;
+    private final BudgetRepository budgetRepository;
 
     @Override
     public void run(String... args) throws Exception {
         this.clientRepository.deleteAll();
         this.projectRepository.deleteAll();
         this.adminRepository.deleteAll();
+        this.budgetRepository.deleteAll();
 
         Client c1 = new Client(
                 null,

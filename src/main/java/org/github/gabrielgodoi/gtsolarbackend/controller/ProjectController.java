@@ -65,12 +65,13 @@ public class ProjectController {
     public ResponseEntity<List<BudgetDto>> findAllBudgetsByProject(@PathVariable("projectId") String projectId) {
         List<BudgetDto> budgets = budgetService.findAll(projectId);
         return ResponseEntity.ok().body(budgets);
-    }*/
+    }
 
     @GetMapping("/budget/{budgetId}")
     public ResponseEntity<BudgetDto> findBudget(@PathVariable("budgetId") String budgetId) {
         return ResponseEntity.ok().body(budgetService.findOne(budgetId));
     }
+
 
     @PostMapping("/budget/{projectId}")
     public ResponseEntity<BudgetDto> addBudget(@PathVariable("projectId") String projectId, @RequestBody InsertBudgetDto budgetDto) {
@@ -78,12 +79,12 @@ public class ProjectController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(projectId).toUri();
         return ResponseEntity.created(uri).body(budget);
     }
-
     @DeleteMapping("/budget/{budgetId}")
     public ResponseEntity<Void> deleteBudget(@PathVariable("budgetId") String budgetId) {
         budgetService.deleteOne(budgetId);
         return ResponseEntity.noContent().build();
     }
+*/
 
     /*
     public ResponseEntity<String> addDocument() {
@@ -97,6 +98,7 @@ public class ProjectController {
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(project.getId()).toUri();
         return ResponseEntity.created(uri).body(project);
     }
+
 
 
    /*

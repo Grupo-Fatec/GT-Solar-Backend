@@ -16,7 +16,6 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InsertProjectDto {
-    private String id;
     private String name;
     private StatusEnum status;
     private List<Step> steps = new ArrayList<>();

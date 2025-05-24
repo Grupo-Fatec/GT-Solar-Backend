@@ -26,5 +26,5 @@ public class ProjectDto {
     private String createdBy;
     private String client;
     private Double approvedValue;
-    private BudgetDto budgetList;
+    private BudgetDto budgetDto;
 }
