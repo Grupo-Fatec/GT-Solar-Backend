@@ -4,8 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.AdminDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.InsertAdminDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.errors.AlreadyExistsException;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
+import org.github.gabrielgodoi.gtsolarbackend.services.mappers.AdminMapper;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
@@ -17,6 +20,7 @@ import java.util.stream.Collectors;
 public class AdminService {
 
     private final AdminRepository adminRepository;
+    private final AdminMapper adminMapper;
 
     public List<AdminDto> findAll() {
         return adminRepository.findAll()
@@ -30,12 +34,22 @@ public class AdminService {
         return new AdminDto(admin);
     }
 
+    public Admin findUserByEmail(String email){
+        return this.adminRepository.findUserByEmail(email);
+    }
+
     public AdminDto create(InsertAdminDto dto) {
+        if (this.adminRepository.findByEmail(dto.getEmail()) != null){
+            throw new AlreadyExistsException("User with email " + dto.getEmail() + " already exists");
+        }
+        String encPass = new BCryptPasswordEncoder().encode(dto.getPassword());
+        dto.setPassword(encPass);
         Admin admin = new Admin();
         dtoToEntity(dto, admin);
         admin.setCreated_at(LocalDateTime.now());
         admin.setUpdated_at(LocalDateTime.now());
-        return new AdminDto(adminRepository.insert(admin));
+
+        return this.adminMapper.entityToDto(this.adminRepository.save(admin));
     }
 
     public AdminDto update(String id, InsertAdminDto dto) {
