@@ -1,17 +1,11 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
 import lombok.*;
-import org.github.gabrielgodoi.gtsolarbackend.dto.admin.AdminDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.budget.BudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;

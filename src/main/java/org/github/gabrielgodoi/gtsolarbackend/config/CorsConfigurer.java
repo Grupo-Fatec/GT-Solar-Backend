@@ -1,6 +1,5 @@
 package org.github.gabrielgodoi.gtsolarbackend.config;
 
-
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
@@ -12,12 +11,15 @@ public class CorsConfigurer {
     @Bean
     public WebMvcConfigurer corsConfiguration() {
         return new WebMvcConfigurer() {
-            public void addCorsMapping(CorsRegistry registry) {
+            public void addCorsMappings(CorsRegistry registry) {
                 registry
                         .addMapping("/**")
-                        .allowedOrigins("https://localhost:8081")
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*");
+                        .allowedOrigins("*")
+                        .allowedMethods("*")
+                        .allowedHeaders("*")
+                        .exposedHeaders("Authorization")
+                        .allowCredentials(false)
+                        .maxAge(3600);
             }
         };
     }

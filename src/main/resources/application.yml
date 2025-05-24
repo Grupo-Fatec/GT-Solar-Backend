@@ -1,6 +1,7 @@
 spring:
   application:
     name: Gt-Solar-backend
+
   profiles:
     active: development
   servlet:

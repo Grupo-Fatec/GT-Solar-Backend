@@ -66,7 +66,6 @@ public class ProjectService {
         Client client = this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
                 () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
         );
-
         Project retrivied = this.projectRepository.findByName(projectDto.getName());
 
         if (retrivied != null) {
@@ -158,4 +157,15 @@ public class ProjectService {
 
         this.projectRepository.deleteAllById(projectIds);
     }
+}
+
+
+    public void dtoToEntity(InsertProjectDto dto, Project entity) {
+        entity.setName(dto.getName());
+        entity.setStatus(dto.getStatus());
+        dto.getSteps().forEach(s -> entity.getSteps().add(s));
+        entity.setCreated_at(LocalDateTime.now());
+        entity.setUpdated_at(LocalDateTime.now());
+    }
+
 }
