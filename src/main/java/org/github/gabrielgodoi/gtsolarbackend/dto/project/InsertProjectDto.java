@@ -20,6 +20,6 @@ public class InsertProjectDto {
     private StatusEnum status;
     private List<Step> steps = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
-    private InsertBudgetDto budgetDto;
+    private InsertBudgetDto budget;
     private String clientId;
 }

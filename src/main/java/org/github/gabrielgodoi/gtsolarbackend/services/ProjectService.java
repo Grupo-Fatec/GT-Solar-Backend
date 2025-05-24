@@ -1,8 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.services;
 
 import lombok.RequiredArgsConstructor;
-import org.github.gabrielgodoi.gtsolarbackend.dto.budget.BudgetDto;
-import org.github.gabrielgodoi.gtsolarbackend.dto.budget.InsertBudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.details.Details;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.InsertProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.ProjectDto;
@@ -74,9 +72,8 @@ public class ProjectService {
         Admin admin = this.adminRepository.findById(adminId).orElseThrow(
                 () -> new EntityNotFoundException("Admin: " + adminId + " not found")
         );
-
         Client client = this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
-                () -> new EntityNotFoundException("Client: " + projectDto.getClientId() + " not found")
+                () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
         );
 
         Project retrivied = this.projectRepository.findByName(projectDto.getName());
@@ -163,6 +160,7 @@ public class ProjectService {
         return this.projectMapper.entityToDto(savedProject);
     }
 
+    /*
     public BudgetDto addBudget(String projectId, InsertBudgetDto budgetDto) {
         Budget entity = new Budget();
         Project project = this.projectRepository.findById(projectId).orElseThrow(
@@ -183,6 +181,7 @@ public class ProjectService {
         this.projectRepository.save(project);
         return this.budgetMapper.entityToDto(entity);
     }
+*/
 
     public void deleteOne(String projectId) {
         this.projectRepository.findById(projectId).orElseThrow(
@@ -198,4 +197,7 @@ public class ProjectService {
 
         this.projectRepository.deleteAllById(projectIds);
     }
+
+}
+
 }

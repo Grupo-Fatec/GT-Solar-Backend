@@ -100,6 +100,19 @@ public class ProjectController {
     }
 
 
+
+   /*
+   *  @PostMapping("/budget/{projectdId}")
+    public ResponseEntity<BudgetDto> addBudget(@PathVariable("projectdId") String projectId, @RequestBody InsertBudgetDto budgetDto) {
+        BudgetDto budget = this.projectService.addBudget(projectId, budgetDto);
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(projectId).toUri();
+        return ResponseEntity.created(uri).body(budget);
+    }
+   *
+   * */
+
+
+
     @GetMapping("/client/{clientId}")
     public ResponseEntity<List<ProjectDto>> findFromClient(@PathVariable("clientId") String clientId) {
         List<ProjectDto> project = this.projectService.findFromClient(clientId);

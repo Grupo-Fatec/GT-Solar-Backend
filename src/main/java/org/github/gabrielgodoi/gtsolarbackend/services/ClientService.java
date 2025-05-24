@@ -28,13 +28,11 @@ public class ClientService {
     }
 
     public ClientDto update(String id, InsertClientDto clientDto) {
-        Optional<Client> client = this.clientRepository.findById(id);
-        if (client.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        this.clientMapper.mapToEntity(clientDto);
-        Client clientCreated = this.clientRepository.save(client.get());
-        return this.clientMapper.mapToDto(clientCreated);
+        this.clientRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("user: " + clientDto.getName() + " not found")
+        );
+        Client client = this.clientRepository.save(this.clientMapper.mapToEntity(clientDto));
+        return this.clientMapper.mapToDto(client);
     }
 
     public ClientDto findOne(String id) {
