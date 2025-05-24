@@ -53,12 +53,15 @@ public class ProjectController {
         return ResponseEntity.created(uri).body(project);
     }
 
-    @PostMapping("/budget/{projectdId}")
+   /*
+   *  @PostMapping("/budget/{projectdId}")
     public ResponseEntity<BudgetDto> addBudget(@PathVariable("projectdId") String projectId, @RequestBody InsertBudgetDto budgetDto) {
         BudgetDto budget = this.projectService.addBudget(projectId, budgetDto);
         URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(projectId).toUri();
         return ResponseEntity.created(uri).body(budget);
     }
+   *
+   * */
 
     @GetMapping("/{projectdId}")
     public ResponseEntity<ProjectDto> findOne(@PathVariable("projectdId") String projectId) {

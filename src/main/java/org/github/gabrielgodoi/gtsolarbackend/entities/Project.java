@@ -34,7 +34,8 @@ public class Project {
     private Client client;
 
     @DBRef
-    private List<Budget> budgetList = new ArrayList<>();
+    private Budget budgetList;
+
     private List<String> observations = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
 

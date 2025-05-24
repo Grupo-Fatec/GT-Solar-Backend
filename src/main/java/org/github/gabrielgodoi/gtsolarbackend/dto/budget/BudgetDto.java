@@ -25,13 +25,4 @@ public class BudgetDto {
     private LocalDateTime date;
     private List<Details> details = new ArrayList<>();
     private String project;
-
-    public BudgetDto(Budget entity) {
-        setId(entity.getId());
-        setValue(entity.getApprovedValue());
-        setStatus(entity.getStatus());
-        setDate(entity.getDate());
-        setProject(entity.getProject().getName());
-        entity.getDetails().forEach(d -> getDetails().add(d));
-    }
 }

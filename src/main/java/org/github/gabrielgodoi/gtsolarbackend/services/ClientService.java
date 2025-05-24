@@ -6,6 +6,7 @@ import org.github.gabrielgodoi.gtsolarbackend.dto.client.InsertClientDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
+import org.github.gabrielgodoi.gtsolarbackend.services.mappers.ClientMapper;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -15,13 +16,11 @@ import java.util.Optional;
 @Service
 public class ClientService {
     private final ClientRepository clientRepository;
+    private final ClientMapper clientMapper;
 
     public ClientDto create(InsertClientDto clientDto) {
-        Client client = new Client();
-        this.entityToDto(client, clientDto);
-        Client clientEntity = this.clientRepository.save(client);
-
-        return new ClientDto(clientEntity);
+        Client clientEntity = this.clientRepository.save(this.clientMapper.mapToEntity(clientDto));
+        return this.clientMapper.mapToDto(clientEntity);
     }
 
     public List<Client> findAll() {
@@ -29,15 +28,11 @@ public class ClientService {
     }
 
     public ClientDto update(String id, InsertClientDto clientDto) {
-        Optional<Client> client = this.clientRepository.findById(id);
-        if (client.isEmpty()) {
-            throw new EntityNotFoundException("User not found");
-        }
-        this.entityToDto(client.get(), clientDto);
-
-        this.clientRepository.insert(client.get());
-
-        return new ClientDto(client.get());
+        this.clientRepository.findById(id).orElseThrow(
+                () -> new EntityNotFoundException("user: " + clientDto.getName() + " not found")
+        );
+        Client client = this.clientRepository.save(this.clientMapper.mapToEntity(clientDto));
+        return this.clientMapper.mapToDto(client);
     }
 
     public ClientDto findOne(String id) {
@@ -51,13 +46,5 @@ public class ClientService {
             throw new EntityNotFoundException("Client not found");
         }
         this.clientRepository.deleteById(id);
-    }
-
-    public void entityToDto(Client entity, InsertClientDto dto) {
-        entity.setName(dto.getName());
-        entity.setStreet(dto.getStreet());
-        entity.setEmail(dto.getEmail());
-        entity.setPhone(dto.getPhone());
-        entity.setDocument(dto.getDocument());
     }
 }

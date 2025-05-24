@@ -1,8 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.services;
 
 import lombok.RequiredArgsConstructor;
-import org.github.gabrielgodoi.gtsolarbackend.dto.budget.BudgetDto;
-import org.github.gabrielgodoi.gtsolarbackend.dto.budget.InsertBudgetDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.details.Details;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.InsertProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.ProjectDto;
@@ -65,7 +63,7 @@ public class ProjectService {
         Admin admin = this.adminRepository.findById(adminId).orElseThrow(
                 () -> new EntityNotFoundException("Admin: " + adminId + " not found")
         );
-        Client client =this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
+        Client client = this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
                 () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
         );
 
@@ -74,22 +72,10 @@ public class ProjectService {
         if (retrivied != null) {
             throw new AlreadyExistsException("Projeto Já existe");
         }
-
         Project project = this.projectMapper.dtoToEntity(projectDto);
         project.setCreatedBy(admin);
         project.setClient(client);
-        project.setBudgetList(new ArrayList<>());
         Project entity = this.projectRepository.save(project);
-
-        projectDto.getBudgetList().forEach(budgetDto -> {
-            double totalApproved = budgetDto.getDetails().stream()
-                    .mapToDouble(Details::getPrice)
-                    .sum();
-            budgetDto.setApprovedValue(totalApproved);
-            Budget budget = this.budgetMapper.dtoToEntity(budgetDto);
-            budget.setProject(entity);
-            this.budgetRepository.save(budget);
-        });
         return this.projectMapper.entityToDto(entity);
     }
 
@@ -130,6 +116,7 @@ public class ProjectService {
         return this.projectMapper.entityToDto(savedProject);
     }
 
+    /*
     public BudgetDto addBudget(String projectId, InsertBudgetDto budgetDto) {
         Budget entity = new Budget();
         Project project = this.projectRepository.findById(projectId).orElseThrow(
@@ -155,6 +142,7 @@ public class ProjectService {
         this.projectRepository.save(project);
         return new BudgetDto(entity);
     }
+*/
 
     public void deleteOne(String projectId) {
         this.projectRepository.findById(projectId).orElseThrow(
@@ -170,14 +158,4 @@ public class ProjectService {
 
         this.projectRepository.deleteAllById(projectIds);
     }
-
-
-    public void dtoToEntity(InsertProjectDto dto, Project entity) {
-        entity.setName(dto.getName());
-        entity.setStatus(dto.getStatus());
-        dto.getSteps().forEach(s -> entity.getSteps().add(s));
-        entity.setCreated_at(LocalDateTime.now());
-        entity.setUpdated_at(LocalDateTime.now());
-    }
-
 }
