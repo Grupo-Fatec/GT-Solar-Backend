@@ -68,7 +68,6 @@ public class ProjectService {
         Client client =this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
                 () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
         );
-
         Project retrivied = this.projectRepository.findByName(projectDto.getName());
 
         if (retrivied != null) {
