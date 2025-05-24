@@ -20,7 +20,8 @@ public class SpringEmailDemoApplication {
     @EventListener(ApplicationReadyEvent.class)
     public void sendMail() {
         senderService.sendEmail(
-                "vitortctavares@gmail.com",
+                // Insert the E-mail Sender's Address
+                "",
                 "This is the subject",
                 "This is the body of the Email");
     }
