@@ -16,9 +16,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/budget")
-
 public class BudgetController {
-
     private final BudgetService budgetService;
 
     @GetMapping
@@ -27,9 +25,9 @@ public class BudgetController {
         return ResponseEntity.ok(budgets);
     }
 
-    @PostMapping
+    @PostMapping("/{projectId}")
     public ResponseEntity<BudgetDto> create(
-            @PathVariable String projectId,
+            @PathVariable("projectId") String projectId,
             @Valid @RequestBody InsertBudgetDto insertBudgetDto) {
 
         BudgetDto createdBudget = budgetService.create(projectId, insertBudgetDto);
@@ -42,19 +40,4 @@ public class BudgetController {
 
         return ResponseEntity.created(location).body(createdBudget);
     }
-
-  /*  @PutMapping("/{id}")
-    public ResponseEntity<BudgetDto> update(
-            @PathVariable String id,
-            @RequestBody UpdateBudgetDto budgetDto) {
-
-        BudgetDto updatedBudget = budgetService.update(id, budgetDto);
-        return ResponseEntity.ok(updatedBudget);
-    }*/
-
-   /* @DeleteMapping("/{id}")
-    public ResponseEntity<Void> delete(@PathVariable String id) {
-        budgetService.deleteOne(id);
-        return ResponseEntity.noContent().build();
-    }*/
 }

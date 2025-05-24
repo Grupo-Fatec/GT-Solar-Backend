@@ -1,6 +1,5 @@
 package org.github.gabrielgodoi.gtsolarbackend.entities;
 
-import jakarta.validation.constraints.NotNull;
 import lombok.*;
 import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
@@ -34,12 +33,10 @@ public class Project {
     private Client client;
 
     @DBRef
-    private List<Budget> budgetList = new ArrayList<>();
+    private Budget budget;
+
     private List<String> observations = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
-
-    @NotNull
-    private Double approvedValue;
 
     private LocalDateTime created_at;
     private LocalDateTime updated_at;

@@ -16,9 +16,7 @@ import java.util.List;
 @NoArgsConstructor
 public class InsertBudgetDto {
     private BudgetStatus status;
-
     @Nullable
     private Double approvedValue;
-
     private List<Details> details = new ArrayList<>();
 }

@@ -16,11 +16,10 @@ import java.util.Set;
 @NoArgsConstructor
 @AllArgsConstructor
 public class InsertProjectDto {
-    private String id;
     private String name;
     private StatusEnum status;
     private List<Step> steps = new ArrayList<>();
     private Set<String> documents = new HashSet<>();
-    private List<InsertBudgetDto> budgetList = new ArrayList<>();
+    private InsertBudgetDto budgetDto;
     private String clientId;
 }

@@ -25,6 +25,5 @@ public class ProjectDto {
     private Set<String> documents = new HashSet<>();
     private String createdBy;
     private String client;
-    private Double approvedValue;
-    private List<BudgetDto> budgetList = new ArrayList<>();
+    private BudgetDto budgetDto;
 }

@@ -18,8 +18,5 @@ public interface ProjectMapper {
 
     Project dtoToEntity(InsertProjectDto projectDto);
 
-    @Mapping(source = "createdBy", target = "createdBy")
-    @Mapping(source = "client", target = "client")
-    @Mapping(source = "budgetList", target = "budgetList")
     ProjectDto entityToDto(Project project);
 }
