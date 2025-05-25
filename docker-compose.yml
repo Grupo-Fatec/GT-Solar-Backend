@@ -1,9 +1,9 @@
-version: "3.8"
-
 services:
   app:
     build: .
     container_name: gt-application
+    volumes:
+      - .:/app
     ports:
       - "8082:8082"
     networks:
@@ -13,11 +13,9 @@ services:
       - db
     environment:
       - SPRING_DATA_MONGODB_URI=mongodb://root:docker@mongo:27017/toysdb?authSource=admin
-    volumes:
-      - ./src:/app/src
 
   db:
-    image: mongo:4.4
+    image: mongo:latest
     container_name: mongo-database
     hostname: mongo
     restart: unless-stopped
