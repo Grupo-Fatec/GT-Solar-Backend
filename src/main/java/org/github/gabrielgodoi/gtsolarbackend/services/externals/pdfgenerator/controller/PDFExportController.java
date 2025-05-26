@@ -1,26 +1,27 @@
 package org.github.gabrielgodoi.gtsolarbackend.services.externals.pdfgenerator.controller;
 
 import java.util.Date;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-
 import javax.servlet.http.HttpServletResponse;
-
 import org.github.gabrielgodoi.gtsolarbackend.services.externals.pdfgenerator.PDFGeneratorService;
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.*;
 
-@Controller
+@RequiredArgsConstructor
+@RestController
+@RequestMapping("/pdf")
 public class PDFExportController {
 
     private final PDFGeneratorService pdfGeneratorService;
 
-    public PDFExportController(PDFGeneratorService pdfGeneratorService) {
-        this.pdfGeneratorService = pdfGeneratorService;
-    }
+    // public PDFExportController(PDFGeneratorService pdfGeneratorService) {
+    //     this.pdfGeneratorService = pdfGeneratorService;
+    // }
 
-    @GetMapping("/pdf/generate")
+    @GetMapping("/generate")
+    @ResponseBody
     public void generatePDF(HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
         DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-hh:mm:ss");
