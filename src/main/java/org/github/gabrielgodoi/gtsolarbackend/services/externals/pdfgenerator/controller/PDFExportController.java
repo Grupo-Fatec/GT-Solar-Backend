@@ -5,9 +5,10 @@ import java.util.Date;
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
-import javax.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.HttpServletResponse;
 import org.github.gabrielgodoi.gtsolarbackend.services.externals.pdfgenerator.PDFGeneratorService;
 import org.springframework.web.bind.annotation.*;
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @RestController
@@ -16,15 +17,11 @@ public class PDFExportController {
 
     private final PDFGeneratorService pdfGeneratorService;
 
-    // public PDFExportController(PDFGeneratorService pdfGeneratorService) {
-    //     this.pdfGeneratorService = pdfGeneratorService;
-    // }
-
     @GetMapping("/generate")
     @ResponseBody
-    public void generatePDF(HttpServletResponse response) throws IOException {
+    public void generatePDF(jakarta.servlet.http.HttpServletResponse response) throws IOException {
         response.setContentType("application/pdf");
-        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-hh:mm:ss");
+        DateFormat dateFormatter = new SimpleDateFormat("yyyy-MM-dd_HH-mm-ss");
         String currentDateTime = dateFormatter.format(new Date());
 
         String headerKey = "Content-Disposition";
@@ -33,5 +30,4 @@ public class PDFExportController {
 
         this.pdfGeneratorService.export(response);
     }
-
 }
