@@ -1,7 +1,7 @@
 package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 
 import lombok.RequiredArgsConstructor;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
@@ -15,7 +15,6 @@ import org.springframework.context.annotation.Profile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration

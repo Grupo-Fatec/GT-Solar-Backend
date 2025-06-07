@@ -3,7 +3,7 @@ package org.github.gabrielgodoi.gtsolarbackend.controller.auth;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.auth.AuthDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.auth.AuthResponseDTo;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
 import org.github.gabrielgodoi.gtsolarbackend.services.auth.AdminAuthService;
 import org.github.gabrielgodoi.gtsolarbackend.services.auth.TokenService;
@@ -30,7 +30,7 @@ public class AuthController {
         String token = this.tokenService.generateToken((Admin) auth.getPrincipal());
         this.adminAuthService.loadUserByUsername(authDto.email());
         Admin admin = this.adminRepository.findUserByEmail(authDto.email());
-        return ResponseEntity.ok().body(new AuthResponseDTo(admin.getName(), admin.getEmail(), token));
+        return ResponseEntity.ok().body(new AuthResponseDTo(admin.getName(), admin.getEmail(), admin.getAdminRole().getValue(), token));
     }
 
     //forget password

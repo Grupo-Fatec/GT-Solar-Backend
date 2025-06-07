@@ -1,7 +1,7 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.admin;
 
 import lombok.*;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.dto.commission.Commission;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 

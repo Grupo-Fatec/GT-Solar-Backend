@@ -1,4 +1,4 @@
-package org.github.gabrielgodoi.gtsolarbackend.entities;
+package org.github.gabrielgodoi.gtsolarbackend.entities.admins;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,6 +7,7 @@ import lombok.Setter;
 import org.github.gabrielgodoi.gtsolarbackend.dto.commission.Commission;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
@@ -27,6 +28,7 @@ public class Admin implements UserDetails {
     @Id
     private String id;
     private String name;
+    @Indexed(unique = true)
     private String email;
     private String password;
     private AdminRole adminRole;

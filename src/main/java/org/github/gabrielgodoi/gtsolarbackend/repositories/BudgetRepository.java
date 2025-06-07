@@ -1,6 +1,5 @@
 package org.github.gabrielgodoi.gtsolarbackend.repositories;
 
-import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
 import org.springframework.data.mongodb.repository.MongoRepository;
 import org.springframework.stereotype.Repository;

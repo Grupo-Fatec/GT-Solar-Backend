@@ -3,7 +3,7 @@ package org.github.gabrielgodoi.gtsolarbackend.services;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.AdminDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.admin.InsertAdminDto;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.errors.AlreadyExistsException;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;

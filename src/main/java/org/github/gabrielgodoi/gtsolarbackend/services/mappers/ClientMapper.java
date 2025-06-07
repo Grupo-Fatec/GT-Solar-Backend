@@ -3,8 +3,6 @@ package org.github.gabrielgodoi.gtsolarbackend.services.mappers;
 import org.github.gabrielgodoi.gtsolarbackend.dto.client.ClientDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.client.InsertClientDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
-import org.github.gabrielgodoi.gtsolarbackend.dto.client.ClientDto;
-import org.github.gabrielgodoi.gtsolarbackend.dto.client.InsertClientDto;
 import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring")

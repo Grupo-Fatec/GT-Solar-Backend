@@ -1,17 +1,14 @@
 package org.github.gabrielgodoi.gtsolarbackend.entities;
 
 import lombok.*;
-import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Equipment;
+import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.persons.*;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.DBRef;
-import org.springframework.data.mongodb.core.mapping.Document;
+import org.springframework.data.mongodb.core.mapping.*;
 
-import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 @Getter
 @Setter
@@ -24,20 +21,19 @@ public class Project {
     private String id;
     private String name;
     private StatusEnum status;
-    private List<Step> steps = new ArrayList<>();
+    private String energyConsumption;
+    private boolean approvedByEngineer;
+    private boolean approvedByClient;
+    private String approvedValue;
 
     @DBRef
     private Admin createdBy;
-
+    @DBRef
+    private Engineer engineer;
+    @DBRef
+    private Installer installer;
     @DBRef
     private Client client;
-
     @DBRef
-    private Budget budget;
-
-    private List<String> observations = new ArrayList<>();
-    private Set<String> documents = new HashSet<>();
-
-    private LocalDateTime created_at;
-    private LocalDateTime updated_at;
+    private List<Equipment> equipments = new ArrayList<>();
 }
