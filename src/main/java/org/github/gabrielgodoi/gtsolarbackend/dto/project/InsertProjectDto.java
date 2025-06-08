@@ -7,8 +7,8 @@ import java.util.List;
 public record InsertProjectDto(
         String name,
         String clientId,
-        String energyConsumption,
         String engineerId,
+        Double energyConsumption,
         String installerId,
         List<EquipmentsDto> equipmentsDto
 ) {

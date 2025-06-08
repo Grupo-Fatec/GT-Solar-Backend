@@ -9,6 +9,6 @@ public record EngineerDto(
         @Email
         String email,
         String crea,
-        Double valuePerProject
+        Double valuePerKwp
 ) {
 }

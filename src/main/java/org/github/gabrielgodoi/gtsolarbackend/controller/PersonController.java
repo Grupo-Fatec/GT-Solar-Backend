@@ -45,17 +45,16 @@ public class PersonController {
         return ResponseEntity.ok(personService.findAllInstaller());
     }
 
-    /*
-    * @GetMapping("/engineers/{id}")
+    @GetMapping("/engineers/{id}")
     public ResponseEntity<EngineerDto> findEngineerById(@PathVariable String id) {
-        return ResponseEntity.ok(personService.findEngineerById(id));
+        return ResponseEntity.ok(personService.findOneEngineer(id));
     }
+
 
     @GetMapping("/installers/{id}")
     public ResponseEntity<InstallerDto> findInstallerById(@PathVariable String id) {
-        return ResponseEntity.ok(personService.findInstallerById(id));
-    }*/
-
+        return ResponseEntity.ok(personService.findOneInstaller(id));
+    }
     // ------- UPDATE -------
 
     @PutMapping("/engineers/{id}")
@@ -73,6 +72,12 @@ public class PersonController {
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deletePerson(@PathVariable String id) {
         personService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Void> deleteMany(@RequestBody List<String> ids) {
+        this.personService.deleteMany(ids);
         return ResponseEntity.noContent().build();
     }
 }

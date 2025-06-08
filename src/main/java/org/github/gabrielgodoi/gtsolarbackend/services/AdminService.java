@@ -25,39 +25,45 @@ public class AdminService {
     public List<AdminDto> findAll() {
         return adminRepository.findAll()
                 .stream()
-                .map(AdminDto::new)
+                .map(this.adminMapper::entityToDto)
                 .collect(Collectors.toList());
     }
 
     public AdminDto findById(String id) {
-        Admin admin = adminRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found"));
-        return new AdminDto(admin);
+        return this.adminMapper.entityToDto(adminRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("Admin not found")));
     }
 
-    public Admin findUserByEmail(String email){
+    public Admin findUserByEmail(String email) {
         return this.adminRepository.findUserByEmail(email);
     }
 
     public AdminDto create(InsertAdminDto dto) {
-        if (this.adminRepository.findByEmail(dto.getEmail()) != null){
-            throw new AlreadyExistsException("User with email " + dto.getEmail() + " already exists");
+        if (this.adminRepository.findByEmail(dto.email()) != null) {
+            throw new AlreadyExistsException("User with email " + dto.email() + " already exists");
         }
-        String encPass = new BCryptPasswordEncoder().encode(dto.getPassword());
-        dto.setPassword(encPass);
-        Admin admin = new Admin();
-        dtoToEntity(dto, admin);
+        String encPass = new BCryptPasswordEncoder().encode(dto.password());
+        InsertAdminDto encryptedDto = new InsertAdminDto(
+                dto.name(),
+                dto.email(),
+                encPass,
+                dto.adminRole()
+        );
+        Admin admin = this.adminMapper.dtoToEntity(encryptedDto);
         admin.setCreated_at(LocalDateTime.now());
         admin.setUpdated_at(LocalDateTime.now());
-
         return this.adminMapper.entityToDto(this.adminRepository.save(admin));
     }
 
+
     public AdminDto update(String id, InsertAdminDto dto) {
-        Admin admin = adminRepository.findById(id)
-                .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
-        dtoToEntity(dto, admin);
-        admin.setUpdated_at(LocalDateTime.now());
-        return new AdminDto(adminRepository.save(admin));
+        Admin retriviedData = adminRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Admin not found")
+                );
+        retriviedData.setName(dto.name() == null ? retriviedData.getName() : dto.name());
+        retriviedData.setEmail(dto.email() == null ? retriviedData.getEmail() : dto.email());
+        retriviedData.setAdminRole(dto.email() == null ? retriviedData.getAdminRole() : dto.adminRole());
+        ;
+        return this.adminMapper.entityToDto(this.adminRepository.save(retriviedData));
     }
 
     public void delete(String id) {
@@ -70,13 +76,6 @@ public class AdminService {
         Admin admin = adminRepository.findById(id)
                 .orElseThrow(() -> new EntityNotFoundException("Admin not found"));
         admin.setUpdated_at(LocalDateTime.now());
-        return new AdminDto(adminRepository.save(admin));
-    }
-
-    private void dtoToEntity(InsertAdminDto dto, Admin entity) {
-        entity.setName(dto.getName());
-        entity.setEmail(dto.getEmail());
-        entity.setPassword(dto.getPassword());
-        entity.setAdminRole(dto.getAdminRole());
+        return this.adminMapper.entityToDto(adminRepository.save(admin));
     }
 }

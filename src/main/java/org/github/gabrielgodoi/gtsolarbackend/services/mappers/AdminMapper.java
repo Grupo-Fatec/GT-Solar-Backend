@@ -8,10 +8,6 @@ import org.mapstruct.Mapper;
 
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface AdminMapper {
-    default String map(Admin admin) {
-        return admin != null ? admin.getName() : null;
-    }
-
     Admin dtoToEntity(InsertAdminDto adminDto);
 
     AdminDto entityToDto(Admin admin);

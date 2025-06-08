@@ -27,6 +27,12 @@ public class PersonService {
                 .toList();
     }
 
+    public EngineerDto findOneEngineer(String id) {
+        return this.mapper.toDto(this.personRepository.findEngineerById(id).orElseThrow(
+                () -> new EntityNotFoundException("Engineer with id: " + id + " was not found")
+        ));
+    }
+
 
     public EngineerDto createEngineer(EngineerDto dto) {
         Engineer entity = mapper.toEntity(dto);
@@ -52,6 +58,22 @@ public class PersonService {
 
 
     // installer
+
+    public List<InstallerDto> findAllInstaller() {
+        List<Person> installers = personRepository.findAllByType("INSTALLER");
+
+        return installers.stream()
+                .filter(Installer.class::isInstance)
+                .map(p -> mapper.toDto((Installer) p))
+                .toList();
+    }
+
+    public InstallerDto findOneInstaller(String id) {
+        return this.mapper.toDto(this.personRepository.findInstallerById(id).orElseThrow(
+                () -> new EntityNotFoundException("Installer with id: " + id + " was not found")
+        ));
+    }
+
     public InstallerDto createInstaller(InstallerDto dto) {
         Installer entity = mapper.toEntity(dto);
         entity.setType("INSTALLER");
@@ -74,16 +96,6 @@ public class PersonService {
 
         return mapper.toDto((Installer) personRepository.save(installer));
     }
-
-    public List<InstallerDto> findAllInstaller() {
-        List<Person> installers = personRepository.findAllByType("INSTALLER");
-
-        return installers.stream()
-                .filter(Installer.class::isInstance)
-                .map(p -> mapper.toDto((Installer) p))
-                .toList();
-    }
-
 
     public void delete(String id) {
         this.personRepository.deleteById(id);

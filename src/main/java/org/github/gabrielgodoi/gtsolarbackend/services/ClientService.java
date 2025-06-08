@@ -29,7 +29,7 @@ public class ClientService {
 
     public ClientDto update(String id, InsertClientDto clientDto) {
         this.clientRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("user: " + clientDto.getName() + " not found")
+                () -> new EntityNotFoundException("user: " + clientDto.name() + " not found")
         );
         Client client = this.clientRepository.save(this.clientMapper.mapToEntity(clientDto));
         return this.clientMapper.mapToDto(client);
@@ -37,7 +37,7 @@ public class ClientService {
 
     public ClientDto findOne(String id) {
         Client client1 = this.clientRepository.findById(id).orElseThrow(() -> new EntityNotFoundException("User not found"));
-        return new ClientDto(client1);
+        return clientMapper.mapToDto(client1);
     }
 
     public void delete(String id) {

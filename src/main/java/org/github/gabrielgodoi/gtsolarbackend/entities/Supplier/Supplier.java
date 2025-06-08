@@ -1,7 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.entities.Supplier;
 
 import lombok.*;
-import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentsDto;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -23,5 +22,5 @@ public class Supplier {
     @Indexed(unique = true)
     private String email;
     private LocalDateTime deliveryDate;
-    private List<EquipmentsDto> equipments = new ArrayList<>();
+    private List<Equipment> equipments = new ArrayList<>();
 }

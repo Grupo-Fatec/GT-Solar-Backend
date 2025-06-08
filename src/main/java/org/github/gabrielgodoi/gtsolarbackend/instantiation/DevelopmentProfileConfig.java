@@ -1,13 +1,15 @@
 package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 
 import lombok.RequiredArgsConstructor;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Equipment;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Supplier;
 import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
+import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Engineer;
+import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.BudgetRepository;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.ProjectRepository;
+import org.github.gabrielgodoi.gtsolarbackend.enums.EquipmentType;
+import org.github.gabrielgodoi.gtsolarbackend.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
@@ -24,14 +26,18 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
     private final ClientRepository clientRepository;
     private final AdminRepository adminRepository;
     private final ProjectRepository projectRepository;
-    private final BudgetRepository budgetRepository;
+    private final PersonRepository personRepository;
+    private final SupplierRepository supplierRepository;
+    private final EquipmentRepository equipmentRepository;
 
     @Override
     public void run(String... args) throws Exception {
+        this.personRepository.deleteAll();
         this.clientRepository.deleteAll();
         this.projectRepository.deleteAll();
         this.adminRepository.deleteAll();
-        this.budgetRepository.deleteAll();
+        this.supplierRepository.deleteAll();
+        this.equipmentRepository.deleteAll();
 
         Client c1 = new Client(
                 null,
@@ -140,7 +146,6 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "alice@admin.com",
                 "senha123",
                 AdminRole.SUPER_ADMIN,
-                new ArrayList<>(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -151,7 +156,6 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "bruno@admin.com",
                 "senha456",
                 AdminRole.SUPPORT,
-                new ArrayList<>(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -162,7 +166,6 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "carla@admin.com",
                 "senha789",
                 AdminRole.SELLER,
-                new ArrayList<>(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
@@ -173,12 +176,120 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "diego@admin.com",
                 "senha321",
                 AdminRole.SUPPORT,
-                new ArrayList<>(),
                 LocalDateTime.now(),
                 LocalDateTime.now()
         );
 
 
+        Installer i1 = new Installer(
+                null,
+                "Carlos Silva",
+                "INSTALLER",
+                "carlos@exemplo.com",
+                new ArrayList<>(),
+                120.0,
+                "Segunda a Sexta",
+                true
+        );
+
+        Installer i2 = new Installer(
+                null,
+                "Fernanda Costa",
+                "INSTALLER",
+                "fernanda@exemplo.com",
+                new ArrayList<>(),
+                135.5,
+                "Segunda, Quarta e Sexta",
+                false
+        );
+
+        Installer i3 = new Installer(
+                null,
+                "João Mendes",
+                "INSTALLER",
+                "joao@exemplo.com",
+                new ArrayList<>(),
+                110.0,
+                "Todos os dias",
+                true
+        );
+
+
+        Engineer e1 = new Engineer(
+                null,
+                "Marcos Lima",
+                "ENGINEER",
+                "marcos@exemplo.com",
+                new ArrayList<>(),
+                "123456-CREA",
+                "Projetos Elétricos",
+                150.0
+        );
+
+        Engineer e2 = new Engineer(
+                null,
+                "Beatriz Rocha",
+                "ENGINEER",
+                "beatriz@exemplo.com",
+                new ArrayList<>(),
+                "789012-CREA",
+                "Eficiência Energética",
+                165.5
+        );
+
+        Engineer e3 = new Engineer(
+                null,
+                "Rafael Almeida",
+                "ENGINEER",
+                "rafael@exemplo.com",
+                new ArrayList<>(),
+                "345678-CREA",
+                "Sistemas Fotovoltaicos",
+                140.0
+        );
+
+
+        Supplier s1 = new Supplier(
+                null,
+                "GreenTech",
+                "contato@greentech.com",
+                LocalDateTime.of(2025, 6, 15, 9, 0),
+                new ArrayList<>()
+        );
+
+        Supplier s2 = new Supplier(
+                null,
+                "SolarParts Ltda",
+                "vendas@solarparts.com",
+                LocalDateTime.of(2025, 6, 20, 14, 30),
+                new ArrayList<>()
+        );
+
+        Supplier s3 = new Supplier(
+                null,
+                "EcoEnergy Supplies",
+                "suporte@ecoenergy.com",
+                LocalDateTime.of(2025, 6, 25, 8, 15),
+                new ArrayList<>()
+        );
+
+        this.supplierRepository.saveAll(Arrays.asList(s1, s2, s3));
+
+
+        // Placas solares
+        Equipment eq1 = new Equipment(null, "Placa Solar 450W JA Solar", EquipmentType.SOLAR_PANEL, "450W", 650.0, "12 anos", s1);
+        Equipment eq2 = new Equipment(null, "Placa Solar 550W Canadian", EquipmentType.SOLAR_PANEL, "550W", 720.0, "10 anos", s1);
+        Equipment eq3 = new Equipment(null, "Placa Solar 400W Trina", EquipmentType.SOLAR_PANEL, "400W", 600.0, "15 anos", s1);
+        Equipment eq4 = new Equipment(null, "Placa Solar 470W Risen", EquipmentType.SOLAR_PANEL, "470W", 680.0, "12 anos", s2);
+        Equipment eq5 = new Equipment(null, "Placa Solar 500W Longi", EquipmentType.SOLAR_PANEL, "500W", 710.0, "10 anos", s2);
+        Equipment eq6 = new Equipment(null, "Placa Solar 540W Jinko", EquipmentType.SOLAR_PANEL, "540W", 730.0, "15 anos", s3);
+
+        // Inversores
+        Equipment eq7 = new Equipment(null, "Inversor Fronius 3kW", EquipmentType.INVERTER, "3000W", 2800.0, "10 anos", s3);
+        Equipment eq8 = new Equipment(null, "Inversor Growatt 5kW", EquipmentType.INVERTER, "5000W", 3500.0, "12 anos", s3);
+        Equipment eq9 = new Equipment(null, "Inversor Huawei 6kW", EquipmentType.INVERTER, "6000W", 4000.0, "15 anos", s2);
+
+        this.equipmentRepository.saveAll(Arrays.asList(eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8, eq9));
         this.adminRepository.saveAll(Arrays.asList(ad1, ad2, ad3, ad4));
         this.clientRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
     }

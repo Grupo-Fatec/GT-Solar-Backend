@@ -7,8 +7,12 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public enum EquipmentType {
-    PLATE("placa"),
-    INVERTER("inversor");
+    SOLAR_PANEL("painel_solar"),
+    INVERTER("inversor"),
+    STRUCTURE("estrutura"),
+    MONITORING_DEVICE("dispositivo_monitoramento"),
+    BATTERY("bateria"),
+    CONTROLLER("controlador");
 
     private final String value;
 

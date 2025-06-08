@@ -21,10 +21,10 @@ public class Project {
     private String id;
     private String name;
     private StatusEnum status;
-    private String energyConsumption;
+    private Double energyConsumption;
     private boolean approvedByEngineer;
     private boolean approvedByClient;
-    private String approvedValue;
+    private Double approvedValue;
 
     @DBRef
     private Admin createdBy;
