@@ -34,7 +34,9 @@ public class AdminService {
     }
 
     public Admin findUserByEmail(String email) {
-        return this.adminRepository.findUserByEmail(email);
+        return this.adminRepository.findUserByEmail(email).orElseThrow(
+                () -> new EntityNotFoundException("User with email: " + email + " was not found")
+        );
     }
 
     public AdminDto create(InsertAdminDto dto) {

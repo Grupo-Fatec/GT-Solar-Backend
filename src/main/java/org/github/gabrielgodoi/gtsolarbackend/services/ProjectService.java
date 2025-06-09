@@ -55,10 +55,10 @@ public class ProjectService {
     // precisamos de um engenheiro -> vamos buscar do repo de persons(buscando um engenheiro por id)
     // precisamos de um instalador -> vamos buscar do repositório de person(buscando um instalador por id)
     // lista de equipamentos que irão ser usados no projeto -> vamos buscar do repositório de equipamentos
-    public ProjectDto create(String adminId, InsertProjectDto projectDto) {
+    public ProjectDto create(String adminEmail, InsertProjectDto projectDto) {
         // verificar se cada documento que precisamos existe
-        Admin admin = this.adminRepository.findById(adminId).orElseThrow(
-                () -> new EntityNotFoundException("Admin com ID '" + adminId + "' não foi encontrado")
+        Admin admin = this.adminRepository.findUserByEmail(adminEmail).orElseThrow(
+                () -> new EntityNotFoundException("Admin com ID '" + adminEmail + "' não foi encontrado")
         );
 
         Client client = this.clientRepository.findById(projectDto.clientId()).orElseThrow(

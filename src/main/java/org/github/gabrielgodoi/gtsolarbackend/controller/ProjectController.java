@@ -33,9 +33,9 @@ public class ProjectController {
         return ResponseEntity.ok().body(this.projectService.findFromClient(clientId));
     }
 
-    @PostMapping("/{adminId}")
-    public ResponseEntity<ProjectDto> create(@PathVariable("adminId") String adminId, @RequestBody InsertProjectDto projectDto) {
-        ProjectDto created = this.projectService.create(adminId, projectDto);
+    @PostMapping("/{adminEmail}")
+    public ResponseEntity<ProjectDto> create(@PathVariable("adminEmail") String adminEmail, @RequestBody InsertProjectDto projectDto) {
+        ProjectDto created = this.projectService.create(adminEmail, projectDto);
         return ResponseEntity.created(URI.create("/projects/" + created.id())).body(created);
     }
 
