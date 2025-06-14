@@ -1,6 +1,7 @@
 package org.github.gabrielgodoi.gtsolarbackend.instantiation;
 
 import lombok.RequiredArgsConstructor;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Equipment;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Supplier;
 import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
@@ -9,6 +10,7 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Engineer;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
 import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
 import org.github.gabrielgodoi.gtsolarbackend.enums.EquipmentType;
+import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -17,6 +19,7 @@ import org.springframework.context.annotation.Profile;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Configuration
@@ -253,7 +256,7 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 null,
                 "GreenTech",
                 "contato@greentech.com",
-                LocalDateTime.of(2025, 6, 15, 9, 0),
+                "6 dias",
                 new ArrayList<>()
         );
 
@@ -261,7 +264,7 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 null,
                 "SolarParts Ltda",
                 "vendas@solarparts.com",
-                LocalDateTime.of(2025, 6, 20, 14, 30),
+                "7 dias",
                 new ArrayList<>()
         );
 
@@ -269,7 +272,7 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 null,
                 "EcoEnergy Supplies",
                 "suporte@ecoenergy.com",
-                LocalDateTime.of(2025, 6, 25, 8, 15),
+                "9 dias",
                 new ArrayList<>()
         );
 
@@ -290,7 +293,73 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
         Equipment eq9 = new Equipment(null, "Inversor Huawei 6kW", EquipmentType.INVERTER, "6000W", 4000.0, "15 anos", s2);
 
         this.equipmentRepository.saveAll(Arrays.asList(eq1, eq2, eq3, eq4, eq5, eq6, eq7, eq8, eq9));
+
+
+        List<Equipment> equipamentosProjeto1 = Arrays.asList(eq1, eq7);
+        List<Equipment> equipamentosProjeto2 = Arrays.asList(eq2, eq8, eq4);
+        List<Equipment> equipamentosProjeto3 = Arrays.asList(eq3, eq9, eq5, eq6);
+        Project p1 = new Project(
+                null,
+                "Projeto João - Residencial",
+                StatusEnum.IN_PROGRES,
+                450.0,
+                false,
+                false,
+                200.00,
+                ad1,
+                e1,
+                i1,
+                c1,
+                equipamentosProjeto1
+        );
+
+        Project p2 = new Project(
+                null,
+                "Projeto Maria - Comercial",
+                StatusEnum.IN_PROGRES,
+                1200.0,
+                true,
+                false,
+                17500.0,
+                ad2,
+                e2,
+                i2,
+                c2,
+                equipamentosProjeto2
+        );
+
+        Project p3 = new Project(
+                null,
+                "Projeto Carlos - Industrial",
+                StatusEnum.DONE,
+                5000.0,
+                true,
+                true,
+                42000.0,
+                ad3,
+                e3,
+                i3,
+                c3,
+                equipamentosProjeto3
+        );
+
+
+        s1.getEquipments().add(eq1);
+        s1.getEquipments().add(eq2);
+        s3.getEquipments().add(eq3);
+        s2.getEquipments().add(eq4);
+        s2.getEquipments().add(eq5);
+
+        s3.getEquipments().add(eq6);
+        s3.getEquipments().add(eq7);
+        s3.getEquipments().add(eq8);
+        s2.getEquipments().add(eq9);
+
+        this.personRepository.saveAll(Arrays.asList(e1, e2, e3, i1, i2, i3));
+        this.supplierRepository.saveAll(Arrays.asList(s1, s2, s3));
         this.adminRepository.saveAll(Arrays.asList(ad1, ad2, ad3, ad4));
         this.clientRepository.saveAll(Arrays.asList(c1, c2, c3, c4, c5));
+        this.projectRepository.saveAll(Arrays.asList(p1, p2, p3));
+
     }
 }

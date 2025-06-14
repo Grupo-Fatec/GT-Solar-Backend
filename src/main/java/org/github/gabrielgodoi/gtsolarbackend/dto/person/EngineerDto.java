@@ -4,11 +4,12 @@ import jakarta.validation.constraints.*;
 
 public record EngineerDto(
         String id,
-        @Min(4)
+        @NotNull
         String name,
         @Email
         String email,
         String crea,
-        Double valuePerKwp
+        @NotNull
+        Double valuePerKwh
 ) {
 }

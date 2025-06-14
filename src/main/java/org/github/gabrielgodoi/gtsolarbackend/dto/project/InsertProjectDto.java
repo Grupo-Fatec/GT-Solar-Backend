@@ -10,7 +10,7 @@ public record InsertProjectDto(
         String engineerId,
         Double energyConsumption,
         String installerId,
-        List<EquipmentsDto> equipmentsDto
+        List<EquipmentsDto> equipments
 ) {
 
 }

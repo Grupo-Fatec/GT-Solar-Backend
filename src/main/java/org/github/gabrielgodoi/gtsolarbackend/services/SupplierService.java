@@ -3,7 +3,6 @@ package org.github.gabrielgodoi.gtsolarbackend.services;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.supplier.InsertSupplierDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.supplier.SupplierDto;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Equipment;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Supplier;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.SupplierRepository;
@@ -20,7 +19,7 @@ public class SupplierService {
     private final SupplierMapper mapper;
 
     public List<SupplierDto> findAll() {
-        return this.supplierRepository.findAll().stream().map(s -> this.mapper.toDto(s)).collect(Collectors.toList());
+        return this.supplierRepository.findAll().stream().map(this.mapper::toDto).collect(Collectors.toList());
     }
 
     public SupplierDto findOne(String id) {
@@ -44,6 +43,9 @@ public class SupplierService {
 
        return this.mapper.toDto(this.supplierRepository.save(retriviedData));
     }
+
+    // fazer pedido para fornecedor
+    public void sentOrderForEquipments(String supplierId){}
 
     public void delete(String id) {
         this.findOne(id);

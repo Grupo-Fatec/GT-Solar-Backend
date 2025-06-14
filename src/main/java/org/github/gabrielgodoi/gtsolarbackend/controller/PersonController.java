@@ -1,5 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.controller;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.github.gabrielgodoi.gtsolarbackend.dto.person.EngineerDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.person.InstallerDto;
@@ -20,14 +21,14 @@ public class PersonController {
     // ------- CREATE -------
 
     @PostMapping("/engineers")
-    public ResponseEntity<EngineerDto> createEngineer(@RequestBody EngineerDto dto) {
+    public ResponseEntity<EngineerDto> createEngineer(@Valid @RequestBody EngineerDto dto) {
         EngineerDto created = personService.createEngineer(dto);
         URI uri = URI.create("/persons/engineers/" + created.id());
         return ResponseEntity.created(uri).body(created);
     }
 
     @PostMapping("/installers")
-    public ResponseEntity<InstallerDto> createInstaller(@RequestBody InstallerDto dto) {
+    public ResponseEntity<InstallerDto> createInstaller(@Valid @RequestBody InstallerDto dto) {
         InstallerDto created = personService.createInstaller(dto);
         URI uri = URI.create("/persons/installers/" + created.id());
         return ResponseEntity.created(uri).body(created);
@@ -58,12 +59,12 @@ public class PersonController {
     // ------- UPDATE -------
 
     @PutMapping("/engineers/{id}")
-    public ResponseEntity<EngineerDto> updateEngineer(@PathVariable String id, @RequestBody EngineerDto dto) {
+    public ResponseEntity<EngineerDto> updateEngineer(@PathVariable String id, @Valid @RequestBody EngineerDto dto) {
         return ResponseEntity.ok(personService.updateEngineer(id, dto));
     }
 
     @PutMapping("/installers/{id}")
-    public ResponseEntity<InstallerDto> updateInstaller(@PathVariable String id, @RequestBody InstallerDto dto) {
+    public ResponseEntity<InstallerDto> updateInstaller(@PathVariable String id, @Valid @RequestBody InstallerDto dto) {
         return ResponseEntity.ok(personService.updateInstaller(id, dto));
     }
 

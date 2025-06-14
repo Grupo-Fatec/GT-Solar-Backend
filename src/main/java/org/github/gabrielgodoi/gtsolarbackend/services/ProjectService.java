@@ -58,7 +58,7 @@ public class ProjectService {
     public ProjectDto create(String adminEmail, InsertProjectDto projectDto) {
         // verificar se cada documento que precisamos existe
         Admin admin = this.adminRepository.findUserByEmail(adminEmail).orElseThrow(
-                () -> new EntityNotFoundException("Admin com ID '" + adminEmail + "' não foi encontrado")
+                () -> new EntityNotFoundException("Admin com email '" + adminEmail + "' não foi encontrado")
         );
 
         Client client = this.clientRepository.findById(projectDto.clientId()).orElseThrow(
@@ -72,7 +72,7 @@ public class ProjectService {
         Installer installer = this.personRepository.findInstallerById(projectDto.installerId()).orElseThrow(
                 () -> new EntityNotFoundException("Instalador com ID '" + projectDto.installerId() + "' não foi encontrado")
         );
-        Double totalCost = this.employeesCost(projectDto.energyConsumption(), engineer.getValuePerKwp(), installer.getPricePerKwp()) + this.equipmentsCoast(projectDto.equipmentsDto());
+        Double totalCost = this.employeesCost(projectDto.energyConsumption(), engineer.getValuePerKwh(), installer.getPricePerKwp()) + this.equipmentsCoast(projectDto.equipments());
         Project project = this.mapper.InsertToEntity(projectDto);
         project.setApprovedValue(totalCost);
         project.setEngineer(engineer);
@@ -140,7 +140,7 @@ public class ProjectService {
         if (projectDto.energyConsumption() != null) {
             Double costEmployees = this.employeesCost(
                     projectDto.energyConsumption(),
-                    retriviedData.getEngineer().getValuePerKwp(),
+                    retriviedData.getEngineer().getValuePerKwh(),
                     retriviedData.getInstaller().getPricePerKwp()
             );
             Double costEquipments = this.equipmentsCoastUpdate(retriviedData.getEquipments());

@@ -22,8 +22,8 @@ public class ProjectController {
         return ResponseEntity.ok(projects);
     }
 
-    @GetMapping("/{id}")
-    public ResponseEntity<ProjectDto> findOne(@PathVariable("id") String id) {
+    @GetMapping("/project/{id}")
+    public ResponseEntity<ProjectDto> findById(@PathVariable("id") String id) {
         ProjectDto project = this.projectService.findOne(id);
         return ResponseEntity.ok(project);
     }

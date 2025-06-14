@@ -12,9 +12,9 @@ import java.util.Optional;
 public interface PersonRepository extends MongoRepository<Person, String> {
     List<Person> findAllByType(String type);
 
-    @Query("{type: 'ENGINEER'}")
+    @Query("{ '_id': ?0, 'type': 'ENGINEER' }")
     Optional<Engineer> findEngineerById(String id);
 
-    @Query("{type: 'INSTALLER'}")
+    @Query("{ '_id': ?0, 'type': 'INSTALLER' }")
     Optional<Installer> findInstallerById(String id);
 }

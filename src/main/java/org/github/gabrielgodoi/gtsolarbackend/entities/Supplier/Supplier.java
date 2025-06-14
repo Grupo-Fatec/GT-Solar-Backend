@@ -5,7 +5,6 @@ import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -21,6 +20,6 @@ public class Supplier {
 
     @Indexed(unique = true)
     private String email;
-    private LocalDateTime deliveryDate;
+    private String deliveryDate;
     private List<Equipment> equipments = new ArrayList<>();
 }

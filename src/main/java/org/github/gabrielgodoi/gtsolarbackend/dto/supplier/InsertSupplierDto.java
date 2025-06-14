@@ -9,6 +9,6 @@ public record InsertSupplierDto(
         String name,
         @Email
         String email,
-        LocalDateTime deliveryDate
+        String deliveryDate
 ) {
 }

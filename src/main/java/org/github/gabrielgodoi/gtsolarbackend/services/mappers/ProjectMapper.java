@@ -9,6 +9,5 @@ import org.mapstruct.Mapper;
 @Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface ProjectMapper {
     ProjectDto toDto(Project entity);
-
     Project InsertToEntity(InsertProjectDto dto);
 }
