@@ -1,5 +1,5 @@
 spring:
   data:
     mongodb:
-      uri: mongodb://root:docker@localhost:27017/toysdb?authSource=admin
+      uri: mongodb://root:docker@localhost:27017/gtcollection?authSource=admin
       auto-index-creation: true
