@@ -12,7 +12,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.net.URI;
 import java.util.List;
 
-@CrossOrigin(origins = "*", allowedHeaders = "*", methods = {RequestMethod.GET, RequestMethod.POST, RequestMethod.PUT, RequestMethod.DELETE})
 @RequiredArgsConstructor
 @RestController
 @RequestMapping("/clients")
@@ -35,7 +34,9 @@ public class ClientController {
     @PostMapping
     public ResponseEntity<ClientDto> create(@RequestBody InsertClientDto clientDto){
         ClientDto createdClient = this.clientService.create(clientDto);
-        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}").buildAndExpand(createdClient.getId()).toUri();
+        URI uri = ServletUriComponentsBuilder.fromCurrentRequestUri().path("/{id}")
+                .buildAndExpand(createdClient.id())
+                .toUri();
         return ResponseEntity.created(uri).build();
     }
 
@@ -43,5 +44,13 @@ public class ClientController {
     public ResponseEntity<Void> delete(@PathVariable("id") String id){
         this.clientService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}")
+    public ResponseEntity<ClientDto> updateClient(
+            @PathVariable String id,
+            @RequestBody InsertClientDto clientDto) {
+        ClientDto updatedClient = clientService.update(id, clientDto);
+        return ResponseEntity.ok(updatedClient);
     }
 }

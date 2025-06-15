@@ -12,7 +12,7 @@ services:
     depends_on:
       - db
     environment:
-      - SPRING_DATA_MONGODB_URI=mongodb://root:docker@mongo:27017/toysdb?authSource=admin
+      - SPRING_DATA_MONGODB_URI=mongodb://root:docker@mongo:27017/gtcollection?authSource=admin
 
   db:
     image: mongo:latest
@@ -26,7 +26,7 @@ services:
     environment:
       - MONGO_INITDB_ROOT_USERNAME=root
       - MONGO_INITDB_ROOT_PASSWORD=docker
-      - MONGO_INITDB_DATABASE=toysdb
+      - MONGO_INITDB_DATABASE=gtcollection
       - MONGO_DB_USERNAME=admin
       - MONGO_DB_PASSWORD=admin
     networks:
@@ -37,8 +37,6 @@ services:
       interval: 10s
       timeout: 10s
       retries: 5
-
-
 
 networks:
   application:
