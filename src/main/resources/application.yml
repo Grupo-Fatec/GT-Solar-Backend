@@ -1,6 +1,17 @@
 spring:
   application:
     name: Gt-Solar-backend
+  mail:
+    host: smtp.gmail.com
+    port: 587
+    username: gabrielgodoi987@gmail.com
+    password: vhsa imuk gqem dexl
+    properties:
+      mail:
+        smtp:
+          auth: true
+          starttls:
+            enable: true
 
   profiles:
     active: development

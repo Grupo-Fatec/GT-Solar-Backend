@@ -1,6 +1,6 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
-import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentsDto;
+import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentProjectDto;
 
 import java.util.List;
 
@@ -10,7 +10,7 @@ public record InsertProjectDto(
         String engineerId,
         Double energyConsumption,
         String installerId,
-        List<EquipmentsDto> equipments
+        List<EquipmentProjectDto> equipments
 ) {
 
 }

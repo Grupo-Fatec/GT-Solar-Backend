@@ -1,6 +1,7 @@
 package org.github.gabrielgodoi.gtsolarbackend.dto.project;
 
 import org.github.gabrielgodoi.gtsolarbackend.dto.client.ClientDto;
+import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentsDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.person.EngineerDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.person.InstallerDto;
@@ -18,7 +19,7 @@ public record ProjectDto(
         EngineerDto engineer,
         InstallerDto installer,
         String energyConsumption,
-        List<EquipmentsDto> equipments,
+        List<EquipmentProjectDto> equipments,
         Double approvedValue
 ) {
 }

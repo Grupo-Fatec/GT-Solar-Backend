@@ -1,6 +1,8 @@
 package org.github.gabrielgodoi.gtsolarbackend.services;
 
 import lombok.RequiredArgsConstructor;
+import org.github.gabrielgodoi.gtsolarbackend.config.Globals;
+import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentsDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.*;
 import org.github.gabrielgodoi.gtsolarbackend.entities.*;
@@ -12,7 +14,9 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
 import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.*;
+import org.github.gabrielgodoi.gtsolarbackend.services.externals.EmailService;
 import org.github.gabrielgodoi.gtsolarbackend.services.mappers.ProjectMapper;
+import org.github.gabrielgodoi.gtsolarbackend.utils.emailBodies.EmailBodies;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,6 +29,9 @@ public class ProjectService {
     private final ClientRepository clientRepository;
     private final PersonRepository personRepository;
     private final ProjectMapper mapper;
+    private final EmailService emailService;
+    private final EmailBodies emailBodies;
+
 
     public List<ProjectDto> findAll() {
         return projectRepository.findAll()
@@ -81,7 +88,16 @@ public class ProjectService {
         project.setCreatedBy(admin);
         project.setClient(client);
         project.setStatus(StatusEnum.PLANNING);
-        return this.mapper.toDto(this.projectRepository.save(project));
+        Project created = this.projectRepository.save(project);
+
+        // send email to engineer
+        this.emailService.sendHtmlEmailWithAttachment(engineer.getEmail(), "Projeto", this.emailBodies.personAcceptProjectBody(engineer.getName(), project.getId()), created);
+        // send email to client
+        this.emailService.sendHtmlEmailWithAttachment(client.getEmail(), "aprovação de projeto Projeto: " + created.getName(), this.emailBodies.clientAcceptProjectBody(client.getName(), project.getId()), created);
+        // send email to installer
+        this.emailService.sendHtmlEmailWithAttachment(client.getEmail(), "aprovação de projeto Projeto: " + created.getName(), this.emailBodies.clientAcceptProjectBody(client.getName(), project.getId()), created);
+
+        return this.mapper.toDto(created);
     }
 
     // método para aprovar um projeto(atualizando o campo aprrovedByClient)
@@ -124,31 +140,37 @@ public class ProjectService {
     }
 
     public ProjectDto update(String projectId, InsertProjectDto projectDto) {
-        Project retriviedData = this.projectRepository.findById(projectId)
+        Project retrievedData = this.projectRepository.findById(projectId)
                 .orElseThrow(() -> new EntityNotFoundException("Project with id: " + projectId + " not found"));
 
-        retriviedData.setEngineer(projectDto.engineerId() != null
+        retrievedData.setEngineer(projectDto.engineerId() != null
                 ? this.personRepository.findEngineerById(projectDto.engineerId())
                 .orElseThrow(() -> new EntityNotFoundException("Engineer com ID '" + projectDto.engineerId() + "' não foi encontrado"))
-                : retriviedData.getEngineer()
+                : retrievedData.getEngineer()
         );
-        retriviedData.setInstaller(projectDto.installerId() != null
+        retrievedData.setInstaller(projectDto.installerId() != null
                 ? this.personRepository.findInstallerById(projectDto.installerId())
                 .orElseThrow(() -> new EntityNotFoundException("Installer com ID '" + projectDto.installerId() + "' não foi encontrado"))
-                : retriviedData.getInstaller()
+                : retrievedData.getInstaller()
         );
-        retriviedData.setName(projectDto.name() != null ? projectDto.name() : retriviedData.getName());
-        retriviedData.setEnergyConsumption(projectDto.energyConsumption() != null ? projectDto.energyConsumption() : retriviedData.getEnergyConsumption());
+        retrievedData.setName(projectDto.name() != null ? projectDto.name() : retrievedData.getName());
+        retrievedData.setEnergyConsumption(projectDto.energyConsumption() != null ? projectDto.energyConsumption() : retrievedData.getEnergyConsumption());
         if (projectDto.energyConsumption() != null) {
             Double costEmployees = this.employeesCost(
                     projectDto.energyConsumption(),
-                    retriviedData.getEngineer().getValuePerKwh(),
-                    retriviedData.getInstaller().getPricePerKwp()
+                    retrievedData.getEngineer().getValuePerKwh(),
+                    retrievedData.getInstaller().getPricePerKwp()
             );
-            Double costEquipments = this.equipmentsCoastUpdate(retriviedData.getEquipments());
-            retriviedData.setApprovedValue(costEmployees + costEquipments);
+            Double costEquipments = this.equipmentsCoastUpdate(retrievedData.getEquipments());
+            retrievedData.setApprovedValue(costEmployees + costEquipments);
         }
-        Project updatedProject = this.projectRepository.save(retriviedData);
+        if(retrievedData.isApprovedByClient() && retrievedData.isApprovedByEngineer()){
+            // comeissão ao admin
+            Admin admin = this.adminRepository.findById(retrievedData.getCreatedBy().getId()).get();
+            // o admin deve ter uma lista de comissões que será atualizada, adicionando uma nova comissão
+
+        }
+        Project updatedProject = this.projectRepository.save(retrievedData);
         return this.mapper.toDto(updatedProject); // Assumindo que você tem um mapper para converter Project -> ProjectDto
     }
 
@@ -181,10 +203,10 @@ public class ProjectService {
         return (kwp * engineerPerKwp) + (kwp * installerPerKwp);
     }
 
-    public Double equipmentsCoast(List<EquipmentsDto> equipments) {
+    public Double equipmentsCoast(List<EquipmentProjectDto> equipments) {
         Double value = 0.0;
-        for (EquipmentsDto equipment : equipments) {
-            value += equipment.price();
+        for (EquipmentProjectDto equipment : equipments) {
+            value += (equipment.price() * equipment.quantity());
         }
         return value;
     }
