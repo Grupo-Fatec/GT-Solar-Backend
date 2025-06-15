@@ -1,5 +1,4 @@
-package org.github.gabrielgodoi.gtsolarbackend.services.externals;
-
+package org.github.gabrielgodoi.gtsolarbackend.services.SpringEmailDemo;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.SimpleMailMessage;
@@ -7,7 +6,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.stereotype.Service;
 
 @Service
-public class EmailService {
+public class EmailSenderService {
     @Autowired
     private JavaMailSender mailSender;
 
@@ -15,9 +14,8 @@ public class EmailService {
                           String subject,
                           String body) {
         SimpleMailMessage message = new SimpleMailMessage();
-        // Set the sender's email address
-        // Note: In a real application, you would typically set this to a configured email address
-        message.setFrom("your-email@example.com");
+        // Insert the sender's e-mail addres  
+        message.setFrom();
         message.setTo(toEmail);
         message.setText(body);
         message.setSubject((subject));
