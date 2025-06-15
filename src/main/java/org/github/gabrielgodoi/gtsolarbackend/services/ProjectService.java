@@ -9,6 +9,7 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Equipment;
 import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Engineer;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
+import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.*;
 import org.github.gabrielgodoi.gtsolarbackend.services.mappers.ProjectMapper;
@@ -79,6 +80,7 @@ public class ProjectService {
         project.setInstaller(installer);
         project.setCreatedBy(admin);
         project.setClient(client);
+        project.setStatus(StatusEnum.PLANNING);
         return this.mapper.toDto(this.projectRepository.save(project));
     }
 
