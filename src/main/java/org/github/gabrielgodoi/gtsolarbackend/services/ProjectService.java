@@ -1,157 +1,199 @@
 package org.github.gabrielgodoi.gtsolarbackend.services;
 
 import lombok.RequiredArgsConstructor;
-import org.github.gabrielgodoi.gtsolarbackend.dto.details.Details;
-import org.github.gabrielgodoi.gtsolarbackend.dto.project.InsertProjectDto;
-import org.github.gabrielgodoi.gtsolarbackend.dto.project.ProjectDto;
-import org.github.gabrielgodoi.gtsolarbackend.dto.project.UpdateProjectDto;
-import org.github.gabrielgodoi.gtsolarbackend.dto.step.Step;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Admin;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Budget;
-import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
+import org.github.gabrielgodoi.gtsolarbackend.dto.equipments.EquipmentsDto;
+import org.github.gabrielgodoi.gtsolarbackend.dto.project.*;
+import org.github.gabrielgodoi.gtsolarbackend.entities.*;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
-import org.github.gabrielgodoi.gtsolarbackend.errors.AlreadyExistsException;
+import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Equipment;
+import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
+import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Engineer;
+import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
+import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.AdminRepository;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.BudgetRepository;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
-import org.github.gabrielgodoi.gtsolarbackend.repositories.ProjectRepository;
-import org.github.gabrielgodoi.gtsolarbackend.services.mappers.BudgetMapper;
+import org.github.gabrielgodoi.gtsolarbackend.repositories.*;
 import org.github.gabrielgodoi.gtsolarbackend.services.mappers.ProjectMapper;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
 public class ProjectService {
     private final ProjectRepository projectRepository;
-    private final ClientRepository clientRepository;
     private final AdminRepository adminRepository;
-    private final BudgetRepository budgetRepository;
-    private final BudgetMapper budgetMapper;
-    private final ProjectMapper projectMapper;
+    private final ClientRepository clientRepository;
+    private final PersonRepository personRepository;
+    private final ProjectMapper mapper;
 
     public List<ProjectDto> findAll() {
-        List<Project> projectList = this.projectRepository.findAll();
-        return projectList.stream().map(project -> {
-            ProjectDto dto = this.projectMapper.entityToDto(project);
-            if (project.getBudget() != null) {
-                dto.setBudgetDto(
-                        this.budgetMapper.entityToDto(project.getBudget())
-                );
-            }
-            return dto;
-        }).collect(Collectors.toList());
+        return projectRepository.findAll()
+                .stream()
+                .map(mapper::toDto)
+                .toList();
     }
 
     public ProjectDto findOne(String id) {
-        Project project = this.projectRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Project: " + id + " not found")
-        );
-        return this.projectMapper.entityToDto(project);
+        Project project = projectRepository.findById(id)
+                .orElseThrow(() -> new EntityNotFoundException("Project with id: " + id + " not found"));
+
+        return mapper.toDto(project);
     }
 
     public List<ProjectDto> findFromClient(String clientId) {
-        this.clientRepository.findById(clientId).orElseThrow(
-                () -> new EntityNotFoundException("User: " + clientId + " doesn't exists in our database")
+        List<Project> projects = projectRepository.findAllByClientId(clientId).orElseThrow(
+                () -> new EntityNotFoundException("No projects found for client with ID: " + clientId)
         );
-        List<Project> projectList = this.projectRepository.findAllByClientId(clientId).orElseThrow(
-                () -> new EntityNotFoundException("User: " + clientId + " still don't have any project related to him!")
-        );
-        return projectList.stream().map(this.projectMapper::entityToDto).collect(Collectors.toList());
+        return projects.stream()
+                .map(mapper::toDto)
+                .toList();
     }
 
 
-    public ProjectDto create(String adminId, InsertProjectDto projectDto) {
-        Admin admin = this.adminRepository.findById(adminId).orElseThrow(
-                () -> new EntityNotFoundException("Admin: " + adminId + " not found")
-        );
-        Client client = this.clientRepository.findById(projectDto.getClientId()).orElseThrow(
-                () -> new EntityNotFoundException("client: " + projectDto.getClientId() + " not found")
+    // precisamos do id de um cliente,
+    // precisamos do id do fornecedor de equipamentos -> ele estará na lista de equipamentos
+    // consumo de energia da residência em que o projeto se iniciará
+    // precisamos de um engenheiro -> vamos buscar do repo de persons(buscando um engenheiro por id)
+    // precisamos de um instalador -> vamos buscar do repositório de person(buscando um instalador por id)
+    // lista de equipamentos que irão ser usados no projeto -> vamos buscar do repositório de equipamentos
+    public ProjectDto create(String adminEmail, InsertProjectDto projectDto) {
+        // verificar se cada documento que precisamos existe
+        Admin admin = this.adminRepository.findUserByEmail(adminEmail).orElseThrow(
+                () -> new EntityNotFoundException("Admin com email '" + adminEmail + "' não foi encontrado")
         );
 
-        Project retrieved = this.projectRepository.findByName(projectDto.getName());
-        if (retrieved != null) {
-            throw new AlreadyExistsException("Project already exists");
-        }
+        Client client = this.clientRepository.findById(projectDto.clientId()).orElseThrow(
+                () -> new EntityNotFoundException("Cliente com ID '" + projectDto.clientId() + "' não foi encontrado")
+        );
 
-        Project project = this.projectMapper.dtoToEntity(projectDto);
+        Engineer engineer = this.personRepository.findEngineerById(projectDto.engineerId()).orElseThrow(
+                () -> new EntityNotFoundException("Engenheiro com ID '" + projectDto.engineerId() + "' não foi encontrado")
+        );
+
+        Installer installer = this.personRepository.findInstallerById(projectDto.installerId()).orElseThrow(
+                () -> new EntityNotFoundException("Instalador com ID '" + projectDto.installerId() + "' não foi encontrado")
+        );
+        Double totalCost = this.employeesCost(projectDto.energyConsumption(), engineer.getValuePerKwh(), installer.getPricePerKwp()) + this.equipmentsCoast(projectDto.equipments());
+        Project project = this.mapper.InsertToEntity(projectDto);
+        project.setApprovedValue(totalCost);
+        project.setEngineer(engineer);
+        project.setInstaller(installer);
         project.setCreatedBy(admin);
         project.setClient(client);
-
-        Project savedProject = this.projectRepository.save(project);
-        Budget budget = this.budgetMapper.dtoToEntity(projectDto.getBudgetDto());
-
-        Double approvedValue = 0.0;
-        for (Details detail : projectDto.getBudgetDto().getDetails()) {
-            approvedValue += detail.getPrice();
-        }
-        budget.setApprovedValue(approvedValue);
-        budget.setDate(LocalDateTime.now());
-        budget.setProject(savedProject);
-        Budget savedBudget = this.budgetRepository.save(budget);
-        savedProject.setBudget(savedBudget);
-        this.projectRepository.save(savedProject);
-        ProjectDto dto = this.projectMapper.entityToDto(savedProject);
-        dto.setBudgetDto(this.budgetMapper.entityToDto(savedBudget));
-        return dto;
+        project.setStatus(StatusEnum.PLANNING);
+        return this.mapper.toDto(this.projectRepository.save(project));
     }
 
-
-    public ProjectDto update(String projectId, UpdateProjectDto updateDto) {
+    // método para aprovar um projeto(atualizando o campo aprrovedByClient)
+    // devemos ter um método para o cliente, o engenheiro aprovarem o projeto
+    // precisamos de uma ideia para que o instalador aceite(ou não) um projeto
+    public void clientApproveProject(String projectId, String engineerId) {
         Project project = this.projectRepository.findById(projectId).orElseThrow(
-                () -> new EntityNotFoundException("Project: " + projectId + " not found")
+                () -> new EntityNotFoundException("projeto com ID '" + projectId + "' não foi encontrado")
         );
-        if (updateDto.getName() != null && !updateDto.getName().isBlank()) {
-            String newName = updateDto.getName().trim();
-            if (!newName.equalsIgnoreCase(project.getName())) {
-                Project existing = this.projectRepository.findByName(newName);
-                if (existing != null && !existing.getId().equals(projectId)) {
-                    throw new AlreadyExistsException("Project: " + newName + " already in use");
-                }
-                project.setName(newName);
-            }
-        }
-        if (updateDto.getStatus() != null) {
-            project.setStatus(updateDto.getStatus());
-        }
-        if (updateDto.getObservations() != null && !updateDto.getObservations().isEmpty()) {
-            for (String obs : updateDto.getObservations()) {
-                if (obs != null && !obs.trim().isBlank()) {
-                    project.getObservations().add(obs.trim());
-                }
-            }
-        }
-        project.setUpdated_at(LocalDateTime.now());
-        Project updatedProject = this.projectRepository.save(project);
-        return this.projectMapper.entityToDto(updatedProject);
+        this.personRepository.findEngineerById(engineerId).orElseThrow(
+                () -> new EntityNotFoundException("engineer com ID '" + projectId + "' não foi encontrado")
+        );
+
+        project.setApprovedByEngineer(true);
+
+        this.projectRepository.save(project);
     }
 
-    public ProjectDto addStep(String projectId, Step step) {
+    public void engineerApproveProject(String projectId, String clientId) {
         Project project = this.projectRepository.findById(projectId).orElseThrow(
-                () -> new EntityNotFoundException("User: " + projectId + " doesn't exists in our database")
+                () -> new EntityNotFoundException("projeto com ID '" + projectId + "' não foi encontrado")
         );
-        project.getSteps().add(step);
-        Project savedProject = this.projectRepository.save(project);
-        return this.projectMapper.entityToDto(savedProject);
+        this.clientRepository.findById(clientId).orElseThrow(
+                () -> new EntityNotFoundException("client com ID '" + projectId + "' não foi encontrado")
+        );
+
+        project.setApprovedByClient(true);
+        this.projectRepository.save(project);
     }
+
+    public void installerAcceptProject(String projectId, String installerId) {
+        Project project = this.projectRepository.findById(projectId).orElseThrow(
+                () -> new EntityNotFoundException("projeto com ID '" + projectId + "' não foi encontrado")
+        );
+        this.personRepository.findInstallerById(installerId).orElseThrow(
+                () -> new EntityNotFoundException("installer com ID '" + projectId + "' não foi encontrado")
+        );
+
+        this.projectRepository.save(project);
+    }
+
+    public ProjectDto update(String projectId, InsertProjectDto projectDto) {
+        Project retriviedData = this.projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project with id: " + projectId + " not found"));
+
+        retriviedData.setEngineer(projectDto.engineerId() != null
+                ? this.personRepository.findEngineerById(projectDto.engineerId())
+                .orElseThrow(() -> new EntityNotFoundException("Engineer com ID '" + projectDto.engineerId() + "' não foi encontrado"))
+                : retriviedData.getEngineer()
+        );
+        retriviedData.setInstaller(projectDto.installerId() != null
+                ? this.personRepository.findInstallerById(projectDto.installerId())
+                .orElseThrow(() -> new EntityNotFoundException("Installer com ID '" + projectDto.installerId() + "' não foi encontrado"))
+                : retriviedData.getInstaller()
+        );
+        retriviedData.setName(projectDto.name() != null ? projectDto.name() : retriviedData.getName());
+        retriviedData.setEnergyConsumption(projectDto.energyConsumption() != null ? projectDto.energyConsumption() : retriviedData.getEnergyConsumption());
+        if (projectDto.energyConsumption() != null) {
+            Double costEmployees = this.employeesCost(
+                    projectDto.energyConsumption(),
+                    retriviedData.getEngineer().getValuePerKwh(),
+                    retriviedData.getInstaller().getPricePerKwp()
+            );
+            Double costEquipments = this.equipmentsCoastUpdate(retriviedData.getEquipments());
+            retriviedData.setApprovedValue(costEmployees + costEquipments);
+        }
+        Project updatedProject = this.projectRepository.save(retriviedData);
+        return this.mapper.toDto(updatedProject); // Assumindo que você tem um mapper para converter Project -> ProjectDto
+    }
+
+
+    // após o projeto ser aprovado vamos adicionar passos a esse projeto
+    // para que ele inicialize e dê continuidade
+    // podemos adicionar passos para manutenção
+    //public ProjectDto addStep(String projectId, Step step) {
+
+    //}
 
     public void deleteOne(String projectId) {
-        this.projectRepository.findById(projectId).orElseThrow(
-                () -> new EntityNotFoundException("Project: " + projectId + " not found")
-        );
-        this.projectRepository.deleteById(projectId);
+        projectRepository.findById(projectId)
+                .orElseThrow(() -> new EntityNotFoundException("Project with ID: " + projectId + " not found"));
+
+        projectRepository.deleteById(projectId);
     }
 
     public void deleteMany(List<String> projectIds) {
-        projectIds.forEach(id -> this.projectRepository.findById(id).orElseThrow(
-                () -> new EntityNotFoundException("Project: " + id + " not found")
-        ));
+        projectIds.forEach(id -> {
+            projectRepository.findById(id)
+                    .orElseThrow(() -> new EntityNotFoundException("Project with ID: " + id + " not found"));
+        });
 
-        this.projectRepository.deleteAllById(projectIds);
+        projectRepository.deleteAllById(projectIds);
     }
 
+    // método para calcular a margem de lucro com base no custo total, um método separado vai desacoplar lógiva
+    public Double employeesCost(Double kwp, Double engineerPerKwp, Double installerPerKwp) {
+        return (kwp * engineerPerKwp) + (kwp * installerPerKwp);
+    }
+
+    public Double equipmentsCoast(List<EquipmentsDto> equipments) {
+        Double value = 0.0;
+        for (EquipmentsDto equipment : equipments) {
+            value += equipment.price();
+        }
+        return value;
+    }
+
+    public Double equipmentsCoastUpdate(List<Equipment> equipments) {
+        Double value = 0.0;
+        for (Equipment equipment : equipments) {
+            value += equipment.getPrice();
+        }
+        return value;
+    }
 }

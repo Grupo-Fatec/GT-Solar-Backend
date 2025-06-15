@@ -3,20 +3,11 @@ package org.github.gabrielgodoi.gtsolarbackend.services.mappers;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.InsertProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.dto.project.ProjectDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Project;
-import org.mapstruct.*;
+import org.mapstruct.Builder;
+import org.mapstruct.Mapper;
 
-@Mapper(componentModel = "spring", uses = {AdminMapper.class, ClientMapper.class, BudgetMapper.class})
+@Mapper(componentModel = "spring", builder = @Builder(disableBuilder = true))
 public interface ProjectMapper {
-    @Named("mapProjectToId")
-    default String mapProjectToId(Project project) {
-        return project != null ? project.getId() : null;
-    }
-
-    default String map(Project project) {
-        return project != null ? project.getId() : null;
-    }
-
-    Project dtoToEntity(InsertProjectDto projectDto);
-
-    ProjectDto entityToDto(Project project);
+    ProjectDto toDto(Project entity);
+    Project InsertToEntity(InsertProjectDto dto);
 }

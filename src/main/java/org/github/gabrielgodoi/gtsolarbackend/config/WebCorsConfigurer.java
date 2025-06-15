@@ -9,8 +9,9 @@ public class WebCorsConfigurer implements WebMvcConfigurer{
     public void addCorsMappings(CorsRegistry corsRegistry){
         corsRegistry
                 .addMapping("/**")
-                .allowedOrigins("http://localhost:8081")
+                .allowedOrigins("http://localhost:8081", "http://localhost:8082")
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "HEAD", "OPTIONS")
-                .allowCredentials(true);
+                .allowedHeaders("*")
+                .allowCredentials(false);
     }
 }
