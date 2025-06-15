@@ -6,7 +6,9 @@ import org.github.gabrielgodoi.gtsolarbackend.dto.client.InsertClientDto;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.errors.EntityNotFoundException;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.ClientRepository;
+import org.github.gabrielgodoi.gtsolarbackend.services.externals.EmailService;
 import org.github.gabrielgodoi.gtsolarbackend.services.mappers.ClientMapper;
+import org.github.gabrielgodoi.gtsolarbackend.utils.emailBodies.EmailBodies;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,9 +19,12 @@ import java.util.Optional;
 public class ClientService {
     private final ClientRepository clientRepository;
     private final ClientMapper clientMapper;
+    private final EmailService emailService;
+    private final EmailBodies emailBodies;
 
     public ClientDto create(InsertClientDto clientDto) {
         Client clientEntity = this.clientRepository.save(this.clientMapper.mapToEntity(clientDto));
+        this.emailService.sendHtmlEmail(clientEntity.getEmail(), "Seja bem vindo a GT-solar", this.emailBodies.welcomeClientBody(clientEntity.getName(), clientEntity.getId()));
         return this.clientMapper.mapToDto(clientEntity);
     }
 

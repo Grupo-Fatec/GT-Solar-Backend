@@ -167,8 +167,7 @@ public class ProjectService {
         if(retrievedData.isApprovedByClient() && retrievedData.isApprovedByEngineer()){
             // comeissão ao admin
             Admin admin = this.adminRepository.findById(retrievedData.getCreatedBy().getId()).get();
-            // o admin deve ter uma lista de comissões que será atualizada, adicionando uma nova comissão
-
+            // o admin deve ter uma lista de comissões que será atualizada, adicionando uma nova comissã
         }
         Project updatedProject = this.projectRepository.save(retrievedData);
         return this.mapper.toDto(updatedProject); // Assumindo que você tem um mapper para converter Project -> ProjectDto
