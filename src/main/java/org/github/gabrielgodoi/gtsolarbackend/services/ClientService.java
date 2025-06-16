@@ -33,10 +33,35 @@ public class ClientService {
     }
 
     public ClientDto update(String id, InsertClientDto clientDto) {
-        this.clientRepository.findById(id).orElseThrow(
+        Client retrievedData = this.clientRepository.findById(id).orElseThrow(
                 () -> new EntityNotFoundException("user: " + clientDto.name() + " not found")
         );
-        Client client = this.clientRepository.save(this.clientMapper.mapToEntity(clientDto));
+
+        retrievedData.setName(clientDto.name() == null ? retrievedData.getName() : clientDto.name());
+        retrievedData.setStreet(clientDto.street() == null ? retrievedData.getStreet() : clientDto.street());
+        retrievedData.setCep(clientDto.cep() == null ? retrievedData.getCep() : clientDto.cep());
+        retrievedData.setUf(clientDto.uf() == null ? retrievedData.getUf() : clientDto.uf());
+        retrievedData.setHouseNumber(clientDto.houseNumber() == null ? retrievedData.getHouseNumber() : clientDto.houseNumber());
+        retrievedData.setNeighbor(clientDto.neighbor() == null ? retrievedData.getNeighbor() : clientDto.neighbor());
+        retrievedData.setComplement(clientDto.complement() == null ? retrievedData.getComplement() : clientDto.complement());
+        retrievedData.setEmail(clientDto.email() == null ? retrievedData.getEmail() : clientDto.email());
+        retrievedData.setPhone(clientDto.phone() == null ? retrievedData.getPhone() : clientDto.phone());
+        retrievedData.setDocument(clientDto.document() == null ? retrievedData.getDocument() : clientDto.document());
+        retrievedData.setPropertyType(clientDto.propertyType() == null ? retrievedData.getPropertyType() : clientDto.propertyType());
+        retrievedData.setRoofType(clientDto.roofType() == null ? retrievedData.getRoofType() : clientDto.roofType());
+
+        // 🔒 Verificação de e-mail duplicado, para evitar erro 11000
+        if (clientDto.email() != null && !clientDto.email().equals(retrievedData.getEmail())) {
+            Optional<Client> existingEmail = clientRepository.findByEmail(clientDto.email());
+            if (existingEmail.isPresent() && !existingEmail.get().getId().equals(retrievedData.getId())) {
+                throw new IllegalArgumentException("E-mail já está em uso por outro cliente.");
+            }
+            retrievedData.setEmail(clientDto.email());
+        }
+
+
+
+        Client client = this.clientRepository.save(retrievedData);
         return this.clientMapper.mapToDto(client);
     }
 

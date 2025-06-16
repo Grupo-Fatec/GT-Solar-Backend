@@ -17,7 +17,7 @@ public record ClientDto(
         String uf,
         String cep,
         String roofType,
-        String property,
+        String propertyType,
         String observations,
         LocalDateTime created_at,
         LocalDateTime updated_at

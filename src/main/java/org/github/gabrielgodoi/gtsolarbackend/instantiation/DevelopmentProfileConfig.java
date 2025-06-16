@@ -8,9 +8,7 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.Client;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Engineer;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
-import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
-import org.github.gabrielgodoi.gtsolarbackend.enums.EquipmentType;
-import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
+import org.github.gabrielgodoi.gtsolarbackend.enums.*;
 import org.github.gabrielgodoi.gtsolarbackend.repositories.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
@@ -55,8 +53,8 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "São Paulo",
                 "SP",
                 "01001-000",
-                "Telhado metálico",
-                "RESIDENCIAL",
+                RoofType.ESTRUTURA_METALICA.getValue(),
+                PropertyType.COMERCIAL.getValue(),
                 "Cliente interessado em energia solar",
                 LocalDateTime.now(),
                 LocalDateTime.now()
@@ -75,8 +73,8 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "Rio de Janeiro",
                 "RJ",
                 "22010-000",
-                "Telha cerâmica",
-                "COMERCIAL",
+                RoofType.ESTRUTURA_METALICA.getValue(),
+                PropertyType.COMERCIAL.getValue(),
                 "Cliente deseja financiamento",
                 LocalDateTime.now(),
                 LocalDateTime.now()
@@ -95,8 +93,8 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "Belo Horizonte",
                 "MG",
                 "30140-000",
-                "Laje",
-                "INDUSTRIAL",
+                RoofType.LAJE.getValue(),
+                PropertyType.RESIDENCIAL.getValue(),
                 "Tem urgência na instalação",
                 LocalDateTime.now(),
                 LocalDateTime.now()
@@ -115,8 +113,8 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "Curitiba",
                 "PR",
                 "82030-000",
-                "Telhado metálico",
-                "RESIDENCIAL",
+                RoofType.METALICO.getValue(),
+                PropertyType.RESIDENCIAL.getValue(),
                 "Solicitou orçamento com urgência",
                 LocalDateTime.now(),
                 LocalDateTime.now()
@@ -135,8 +133,8 @@ public class DevelopmentProfileConfig implements CommandLineRunner {
                 "Porto Alegre",
                 "RS",
                 "90420-000",
-                "Telhado metálico",
-                "COMERCIAL",
+                RoofType.METALICO.getValue(),
+                PropertyType.COMERCIAL.getValue(),
                 "Interessado em parceria",
                 LocalDateTime.now(),
                 LocalDateTime.now()

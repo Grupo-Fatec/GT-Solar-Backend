@@ -44,8 +44,8 @@ public class ProjectController {
         return ResponseEntity.ok().body(this.projectService.update(id, projectDto));
     }
 
-    @PatchMapping("/{projectId}/admin/{adminId}")
-    public ResponseEntity<String> approvedByEngineer(@PathVariable("projectId") String projectId, @PathVariable("adminId") String adminId) {
+    @PatchMapping("/{projectId}/admin/{engineerId}")
+    public ResponseEntity<String> approvedByEngineer(@PathVariable("projectId") String projectId, @PathVariable("engineerId") String adminId) {
         this.projectService.engineerApproveProject(projectId, adminId);
         return ResponseEntity.ok("Projeto com ID " + projectId + " foi aprovado pelo engenheiro.");
     }

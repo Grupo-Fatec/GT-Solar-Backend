@@ -20,7 +20,7 @@ public class Client {
     private String id;
     private String name;
     private String document;
-    @Indexed(unique = true)
+    @Indexed(unique = true, sparse = true)
     private String email;
     private String phone;
     private String street;
@@ -31,7 +31,7 @@ public class Client {
     private String uf;
     private String cep;
     private String roofType;
-    private String property;
+    private String propertyType;
     private String observations;
     private LocalDateTime created_at;
     private LocalDateTime updated_at;

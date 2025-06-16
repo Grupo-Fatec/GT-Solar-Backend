@@ -116,11 +116,11 @@ public class ProjectService {
         this.projectRepository.save(project);
     }
 
-    public void engineerApproveProject(String projectId, String clientId) {
+    public void engineerApproveProject(String projectId, String engineerId) {
         Project project = this.projectRepository.findById(projectId).orElseThrow(
                 () -> new EntityNotFoundException("projeto com ID '" + projectId + "' não foi encontrado")
         );
-        this.clientRepository.findById(clientId).orElseThrow(
+        this.personRepository.findEngineerById(engineerId).orElseThrow(
                 () -> new EntityNotFoundException("client com ID '" + projectId + "' não foi encontrado")
         );
 

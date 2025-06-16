@@ -8,9 +8,7 @@ import org.github.gabrielgodoi.gtsolarbackend.entities.Supplier.Supplier;
 import org.github.gabrielgodoi.gtsolarbackend.entities.admins.Admin;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Engineer;
 import org.github.gabrielgodoi.gtsolarbackend.entities.persons.Installer;
-import org.github.gabrielgodoi.gtsolarbackend.enums.AdminRole;
-import org.github.gabrielgodoi.gtsolarbackend.enums.EquipmentType;
-import org.github.gabrielgodoi.gtsolarbackend.enums.StatusEnum;
+import org.github.gabrielgodoi.gtsolarbackend.enums.*;
 import org.github.gabrielgodoi.gtsolarbackend.services.externals.EmailService;
 import org.github.gabrielgodoi.gtsolarbackend.utils.emailBodies.EmailBodies;
 import org.springframework.http.ResponseEntity;
@@ -18,7 +16,6 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.UUID;
 
@@ -87,8 +84,8 @@ public class EmailTest {
                         "Cidade Teste",
                         "UF",
                         "00000-000",
-                        "Cobertura",
-                        "RESIDENCIAL",
+                        RoofType.POLICARBONATO.getValue(),
+                        PropertyType.COMERCIAL.getValue(),
                         "Observação qualquer",
                         LocalDateTime.now(),
                         LocalDateTime.now()
